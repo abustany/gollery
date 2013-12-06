@@ -20,6 +20,7 @@ import (
 const (
 	THUMBNAILER_SIZE_PX             = 200
 	THUMBNAILER_COMPRESSION_QUALITY = 75
+	THUMBNAILER_CLEANUP_JOB_ID      = "@cleanup"
 )
 
 type Thumbnailer struct {
@@ -29,6 +30,8 @@ type Thumbnailer struct {
 	thumbnailingQueue chan string
 	queuedItems       map[string]bool
 	queuedItemsMutex  sync.Mutex
+	watchedDirs       map[string]bool
+	watchedDirsMutex  sync.Mutex
 }
 
 func init() {
@@ -112,6 +115,15 @@ func (t *Thumbnailer) checkCacheDir(dirPath string) ([]string, error) {
 	return allThumbKeys, nil
 }
 
+func (t *Thumbnailer) isWatchedDirectory(filePath string) bool {
+	t.watchedDirsMutex.Lock()
+	defer t.watchedDirsMutex.Unlock()
+
+	_, watched := t.watchedDirs[filePath]
+
+	return watched
+}
+
 func (t *Thumbnailer) fileMonitorRoutine() {
 	for {
 		select {
@@ -126,8 +138,16 @@ func (t *Thumbnailer) fileMonitorRoutine() {
 			}
 
 			if ev.IsDelete() || ev.IsRename() {
-				// We can't know if it was a directory or a file... Try to remove anyway
-				// I assume if the directory gets deleted, the monitor goes away?
+				// We can't know if it was a directory or a file... Try to figure out
+
+				if t.isWatchedDirectory(ev.Name) {
+					// Crap, a directory was deleted, and we can't list it anymore... We need
+					// queue a full cleanup
+					t.ScheduleThumbnail(THUMBNAILER_CLEANUP_JOB_ID)
+					continue
+				}
+
+				// It was not a watched directory... So it must have been a file
 				t.DeleteThumbnail(ev.Name)
 				continue
 			}
@@ -150,6 +170,13 @@ func (t *Thumbnailer) fileMonitorRoutine() {
 
 				if err != nil {
 					revel.ERROR.Printf("Cannot setup a file monitor on %s: %s", ev.Name, err)
+					continue
+				}
+
+				_, err = t.checkCacheDir(ev.Name)
+
+				if err != nil {
+					revel.ERROR.Printf("Cannot create thumbnails for directory '%s': %s", ev.Name, err)
 				}
 			} else {
 				revel.INFO.Printf("Skipping file event for file of unknown type %s", ev.Name)
@@ -165,6 +192,11 @@ func (t *Thumbnailer) thumbnailQueueRoutine() {
 		t.queuedItemsMutex.Lock()
 		delete(t.queuedItems, filePath)
 		t.queuedItemsMutex.Unlock()
+
+		if filePath == THUMBNAILER_CLEANUP_JOB_ID {
+			t.CheckCache()
+			continue
+		}
 
 		err := t.CreateThumbnail(filePath)
 
@@ -182,6 +214,7 @@ func NewThumbnailer(rootDir string, cacheDir string) (*Thumbnailer, error) {
 		CacheDir:          cacheDir,
 		thumbnailingQueue: make(chan string, 256),
 		queuedItems:       make(map[string]bool, 256),
+		watchedDirs:       map[string]bool{},
 	}
 
 	var err error
@@ -205,6 +238,8 @@ func NewThumbnailer(rootDir string, cacheDir string) (*Thumbnailer, error) {
 
 // Creates missing thumbnails
 func (t *Thumbnailer) CheckCache() error {
+	revel.INFO.Printf("Starting cache cleanup")
+
 	allThumbKeys, err := t.checkCacheDir(t.RootDir)
 
 	if err != nil {
@@ -271,6 +306,10 @@ func (t *Thumbnailer) setupDirMonitor(path string, info os.FileInfo, err error) 
 	}
 
 	err = t.monitor.Watch(path)
+
+	t.watchedDirsMutex.Lock()
+	t.watchedDirs[path] = true
+	t.watchedDirsMutex.Unlock()
 
 	if err == nil {
 		revel.INFO.Printf("Setup a directory monitor on '%s'", path)
