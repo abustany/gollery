@@ -115,12 +115,12 @@ func (t *Thumbnailer) fileMonitorRoutine() {
 	for {
 		select {
 		case ev := <-t.monitor.Event:
-			revel.INFO.Printf("Thumbnailer: file event: %s", ev)
+			revel.TRACE.Printf("Thumbnailer: file event: %s", ev)
 
 			basename := path.Base(ev.Name)
 
 			if len(basename) > 0 && basename[0] == '.' {
-				revel.INFO.Printf("Skipping event for hidden file %s", ev.Name)
+				revel.TRACE.Printf("Skipping event for hidden file %s", ev.Name)
 				continue
 			}
 
