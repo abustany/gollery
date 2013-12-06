@@ -16,3 +16,18 @@ case "$GOPATH" in
 		export GOPATH="${MYDIR}${GOPATH:+:${GOPATH}}"
 		;;
 esac
+
+REVEL_BIN="$(which revel 2>/dev/null)"
+
+if [ -z "$REVEL_BIN" ]; then
+	REVEL_BIN="${MYDIR}/bin/revel"
+fi
+
+if [ ! -x "$REVEL_BIN" ]; then
+	echo -n "You don't seem to have the revel binary installed, install it? [y/n] "
+	read X
+
+	if [ "$X" = "y" ]; then
+		go get github.com/robfig/revel/revel
+	fi
+fi
