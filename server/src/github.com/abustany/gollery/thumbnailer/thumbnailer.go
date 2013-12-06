@@ -12,6 +12,7 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -25,6 +26,8 @@ type Thumbnailer struct {
 	CacheDir          string
 	monitor           *fsnotify.Watcher
 	thumbnailingQueue chan string
+	queuedItems       map[string]bool
+	queuedItemsMutex  sync.Mutex
 }
 
 func init() {
@@ -128,13 +131,7 @@ func (t *Thumbnailer) fileMonitorRoutine() {
 				continue
 			}
 
-			// We'll always get a MODIFY for new files right after
 			if info.Mode().IsRegular() {
-				if ev.IsCreate() {
-					revel.INFO.Printf("Skipping CREATE event for regular file %s", ev.Name)
-					continue
-				}
-
 				t.ScheduleThumbnail(ev.Name)
 			} else if info.IsDir() {
 				if !ev.IsCreate() {
@@ -157,6 +154,10 @@ func (t *Thumbnailer) fileMonitorRoutine() {
 
 func (t *Thumbnailer) thumbnailQueueRoutine() {
 	for filePath := range t.thumbnailingQueue {
+		t.queuedItemsMutex.Lock()
+		delete(t.queuedItems, filePath)
+		t.queuedItemsMutex.Unlock()
+
 		err := t.CreateThumbnail(filePath)
 
 		if err != nil {
@@ -169,10 +170,10 @@ func (t *Thumbnailer) thumbnailQueueRoutine() {
 
 func NewThumbnailer(rootDir string, cacheDir string) (*Thumbnailer, error) {
 	t := &Thumbnailer{
-		rootDir,
-		cacheDir,
-		nil,
-		make(chan string, 256),
+		RootDir:           rootDir,
+		CacheDir:          cacheDir,
+		thumbnailingQueue: make(chan string, 256),
+		queuedItems:       make(map[string]bool, 256),
 	}
 
 	var err error
@@ -222,7 +223,17 @@ func (t *Thumbnailer) SetupMonitors() error {
 
 func (t *Thumbnailer) ScheduleThumbnail(filePath string) {
 	revel.INFO.Printf("Scheduling thumbnailing of file %s", filePath)
+
+	t.queuedItemsMutex.Lock()
+	defer t.queuedItemsMutex.Unlock()
+
+	if _, alreadyQueued := t.queuedItems[filePath]; alreadyQueued {
+		revel.INFO.Printf("Thumbnailing already scheduled for file %s", filePath)
+		return
+	}
+
 	t.thumbnailingQueue <- filePath
+	t.queuedItems[filePath] = true
 }
 
 func (t *Thumbnailer) CreateThumbnail(filePath string) error {
@@ -271,26 +282,52 @@ func (t *Thumbnailer) CreateThumbnail(filePath string) error {
 	err = mw.ResizeImage(width, height, imagick.FILTER_TRIANGLE, 1)
 
 	if err != nil {
-		return utils.WrapError(err, "Cannot generate thumbnail for file '%s'", filePath)
+		return utils.WrapError(err, "Cannot generate thumbnail for file '%s'", normalizedPath)
 	}
 
 	err = mw.SetCompressionQuality(THUMBNAILER_COMPRESSION_QUALITY)
 
 	if err != nil {
-		return utils.WrapError(err, "Cannot set compression quality for file '%s'", filePath)
+		return utils.WrapError(err, "Cannot set compression quality for file '%s'", normalizedPath)
 	}
 
 	err = mw.WriteImage(thumbPath)
 
 	if err != nil {
-		return utils.WrapError(err, "Cannot write thumbnail '%s' for file '%s'", thumbPath, filePath)
+		return utils.WrapError(err, "Cannot write thumbnail '%s' for file '%s'", thumbPath, normalizedPath)
 	}
 
-	revel.INFO.Printf("Thumbnailed image '%s' as '%s' in %.2f seconds", filePath, thumbPath, time.Now().Sub(startTime).Seconds())
+	revel.INFO.Printf("Thumbnailed image '%s' as '%s' in %.2f seconds", normalizedPath, thumbPath, time.Now().Sub(startTime).Seconds())
+
+	return nil
+}
+
+func (t *Thumbnailer) DeleteThumbnail(filePath string) error {
+	normalizedPath, err := t.normalizePath(filePath)
+
+	if err != nil {
+		return utils.WrapError(err, "Invalid path '%s'", normalizedPath)
+	}
+
+	fileId := normalizedPath[1+len(t.RootDir):]
+	thumbKey := makeCacheKey(fileId)
+	thumbPath := path.Join(t.CacheDir, thumbKey)
+
+	err = os.Remove(thumbPath)
+
+	if os.IsNotExist(err) {
+		return nil
+	}
+
+	if err != nil {
+		return utils.WrapError(err, "Cannot remove thumbnail")
+	}
+
+	revel.INFO.Printf("Deleted thumbnail for image '%s'", normalizedPath)
 
 	return nil
 }
 
 func (t *Thumbnailer) ThumbnailQueueSize() int {
-	return len(t.thumbnailingQueue)
+	return len(t.queuedItems)
 }
