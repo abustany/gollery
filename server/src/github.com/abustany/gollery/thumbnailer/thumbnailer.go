@@ -11,6 +11,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
@@ -192,7 +193,12 @@ func NewThumbnailer(rootDir string, cacheDir string) (*Thumbnailer, error) {
 	}
 
 	go t.fileMonitorRoutine()
-	go t.thumbnailQueueRoutine()
+
+	revel.INFO.Printf("Starting %d thumbnailer routines", runtime.NumCPU())
+
+	for i := 0; i < runtime.NumCPU(); i++ {
+		go t.thumbnailQueueRoutine()
+	}
 
 	return t, nil
 }
