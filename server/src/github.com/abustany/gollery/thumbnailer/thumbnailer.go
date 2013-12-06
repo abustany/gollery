@@ -124,7 +124,7 @@ func (t *Thumbnailer) fileMonitorRoutine() {
 				continue
 			}
 
-			if ev.IsDelete() {
+			if ev.IsDelete() || ev.IsRename() {
 				// We can't know if it was a directory or a file... Try to remove anyway
 				// I assume if the directory gets deleted, the monitor goes away?
 				t.DeleteThumbnail(ev.Name)
