@@ -1,0 +1,11 @@
+@mixin respond-to($category) {
+	@if $category == 'smartphone' {
+		@media (max-midth: 320px) { @content; }
+	}
+	@else if $category == 'tablet' {
+		@media (min-device-width : 768px) and (max-device-width : 1024px) { @content; }
+	}
+	@else if $category == 'hidpi' {
+		@media (min-resolution: 200dpi) { @content; }
+	}
+}

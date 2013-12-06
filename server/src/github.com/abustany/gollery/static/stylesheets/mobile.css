@@ -1,0 +1,71 @@
+/* line 3, ../sass/mobile.scss */
+#sidebar {
+  background-color: #00BB00;
+  width: 100%;
+  position: absolute;
+  -webkit-transform: translateY(calc(-100% + 2em));
+  -moz-transform: translateY(calc(-100% + 2em));
+  -ms-transform: translateY(calc(-100% + 2em));
+  -o-transform: translateY(calc(-100% + 2em));
+  transform: translateY(calc(-100% + 2em));
+  -webkit-transform: translateY(-moz-calc(-100% + 2em));
+  -moz-transform: translateY(-moz-calc(-100% + 2em));
+  -ms-transform: translateY(-moz-calc(-100% + 2em));
+  -o-transform: translateY(-moz-calc(-100% + 2em));
+  transform: translateY(-moz-calc(-100% + 2em));
+  -webkit-transition: -webkit-transform 1s;
+  -moz-transition: -moz-transform 1s;
+  -o-transition: -o-transform 1s;
+  transition: "transform" 1s;
+  padding-bottom: 2em;
+  height: 80%;
+  overflow: clip; }
+
+/* line 15, ../sass/mobile.scss */
+#pane-main {
+  overflow: scroll; }
+
+/* line 19, ../sass/mobile.scss */
+#content {
+  padding-top: 2em;
+  margin-left: 0px; }
+
+/* line 24, ../sass/mobile.scss */
+#sidebar-hide-box {
+  position: absolute;
+  top: calc(100% - 2em);
+  top: -moz-calc(100% - 2em); }
+
+/* line 30, ../sass/mobile.scss */
+#sidebar-hide-button {
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+  -webkit-transition: -webkit-transform 1s;
+  -moz-transition: -moz-transform 1s;
+  -o-transition: -o-transform 1s;
+  transition: "transform" 1s; }
+
+/* line 35, ../sass/mobile.scss */
+#album-list-container {
+  height: calc(100% - 2em);
+  height: -moz-calc(100% - 2em);
+  overflow: scroll; }
+
+/* actually "shown" on mobile... */
+/* line 43, ../sass/mobile.scss */
+.sidebar-hidden #sidebar {
+  -webkit-transform: translateY(0px);
+  -moz-transform: translateY(0px);
+  -ms-transform: translateY(0px);
+  -o-transform: translateY(0px);
+  transform: translateY(0px); }
+/* line 47, ../sass/mobile.scss */
+.sidebar-hidden #sidebar-hide-button {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg); }
