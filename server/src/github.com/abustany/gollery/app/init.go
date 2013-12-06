@@ -4,6 +4,7 @@ import (
 	"github.com/abustany/gollery/thumbnailer"
 	"github.com/robfig/revel"
 	"github.com/robfig/revel/modules/jobs/app/jobs"
+	"runtime"
 )
 
 const (
@@ -31,6 +32,9 @@ func init() {
 	revel.OnAppStart(func() {
 		initServices()
 	})
+
+	// Use as many threads as we have CPUs, helps for thumbnailing
+	runtime.GOMAXPROCS(runtime.NumCPU())
 }
 
 func initServices() {
