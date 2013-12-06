@@ -41,13 +41,14 @@ func makeCacheKey(path string) string {
 	return key
 }
 
-func (t *Thumbnailer) checkCacheDir(dirPath string) error {
+// returns the list of thumb keys from this directory
+func (t *Thumbnailer) checkCacheDir(dirPath string) ([]string, error) {
 	dirFd, err := os.Open(dirPath)
 
 	revel.INFO.Printf("Cleaning cache for directory '%s'", dirPath)
 
 	if err != nil {
-		return utils.WrapError(err, "Cannot open directory '%s'", dirPath)
+		return nil, utils.WrapError(err, "Cannot open directory '%s'", dirPath)
 	}
 
 	defer dirFd.Close()
@@ -55,33 +56,39 @@ func (t *Thumbnailer) checkCacheDir(dirPath string) error {
 	fis, err := dirFd.Readdir(-1)
 
 	if err == io.EOF {
-		return nil
+		return nil, nil
 	}
 
 	if err != nil {
-		return utils.WrapError(err, "Cannot read directory '%s'", dirPath)
+		return nil, utils.WrapError(err, "Cannot read directory '%s'", dirPath)
 	}
 
 	thumbsToCreate := []string{}
+	allThumbKeys := []string{}
 
 	for _, f := range fis {
 		fPath := path.Join(dirPath, f.Name())
 
 		if f.IsDir() {
-			err = t.checkCacheDir(fPath)
+			childThumbKeys, err := t.checkCacheDir(fPath)
 
 			if err != nil {
 				revel.WARN.Printf("Cannot clean cache directory '%s': %s (skipping)", fPath, err)
 			}
+
+			allThumbKeys = append(allThumbKeys, childThumbKeys...)
 
 			continue
 		}
 
 		fId := fPath[1+len(t.RootDir):]
 
-		revel.INFO.Printf("Checking thumbnail for %s", fId)
+		revel.TRACE.Printf("Checking thumbnail for %s", fId)
 
 		cacheKey := makeCacheKey(fId)
+
+		allThumbKeys = append(allThumbKeys, cacheKey)
+
 		cacheFilePath := path.Join(t.CacheDir, cacheKey)
 
 		_, err := os.Stat(cacheFilePath)
@@ -101,7 +108,7 @@ func (t *Thumbnailer) checkCacheDir(dirPath string) error {
 		t.ScheduleThumbnail(x)
 	}
 
-	return nil
+	return allThumbKeys, nil
 }
 
 func (t *Thumbnailer) fileMonitorRoutine() {
@@ -120,7 +127,7 @@ func (t *Thumbnailer) fileMonitorRoutine() {
 			if ev.IsDelete() {
 				// We can't know if it was a directory or a file... Try to remove anyway
 				// I assume if the directory gets deleted, the monitor goes away?
-				// t.RemoveCacheFile(id)
+				t.DeleteThumbnail(ev.Name)
 				continue
 			}
 
@@ -192,7 +199,56 @@ func NewThumbnailer(rootDir string, cacheDir string) (*Thumbnailer, error) {
 
 // Creates missing thumbnails
 func (t *Thumbnailer) CheckCache() error {
-	return t.checkCacheDir(t.RootDir)
+	allThumbKeys, err := t.checkCacheDir(t.RootDir)
+
+	if err != nil {
+		return utils.WrapError(err, "Cannot check thumbnail cache")
+	}
+
+	keyHash := make(map[string]bool, len(allThumbKeys))
+
+	for _, key := range allThumbKeys {
+		keyHash[key] = true
+	}
+
+	fd, err := os.Open(t.CacheDir)
+
+	if err != nil {
+		return utils.WrapError(err, "Cannot check thumbnail cache for stall thumbnails")
+	}
+
+	defer fd.Close()
+
+	for {
+		// Don't read all files at all, it might be a lot
+		fis, err := fd.Readdir(1024)
+
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			return utils.WrapError(err, "Cannot list thumbnails while cleaning cache")
+		}
+
+		for _, fi := range fis {
+			// Thumbnail corresponds to a known picture, leave it alone
+			if _, exists := keyHash[fi.Name()]; exists {
+				continue
+			}
+
+			thumbPath := path.Join(t.CacheDir, fi.Name())
+
+			revel.INFO.Printf("Removing stale thumbnail with key %s", fi.Name())
+			err = os.Remove(thumbPath)
+
+			if err != nil && !os.IsNotExist(err) {
+				return utils.WrapError(err, "Cannot delete thumbnail '%s' while cleaning up cache", thumbPath)
+			}
+		}
+	}
+
+	return nil
 }
 
 func (t *Thumbnailer) setupDirMonitor(path string, info os.FileInfo, err error) error {
@@ -236,29 +292,38 @@ func (t *Thumbnailer) ScheduleThumbnail(filePath string) {
 	t.queuedItems[filePath] = true
 }
 
-func (t *Thumbnailer) CreateThumbnail(filePath string) error {
-	var fileId string
-
+// For absolute paths, check that they are in the root dir
+// For relative paths, prepend the root dir path
+func (t *Thumbnailer) normalizePath(filePath string) (string, error) {
 	if len(filePath) > 0 && filePath[0] == '/' {
 		if !strings.HasPrefix(filePath, t.RootDir) {
-			return fmt.Errorf("Not creating a thumbnail for a file outside the root directory: %s", filePath)
+			return "", fmt.Errorf("Not creating a thumbnail for a file outside the root directory: %s", filePath)
 		}
 
-		fileId = filePath[1+len(t.RootDir):]
-	} else {
-		fileId = filePath
-		filePath = path.Join(t.RootDir, filePath)
+		return filePath, nil
 	}
+
+	return path.Join(t.RootDir, filePath), nil
+}
+
+func (t *Thumbnailer) CreateThumbnail(filePath string) error {
+	normalizedPath, err := t.normalizePath(filePath)
+
+	if err != nil {
+		return utils.WrapError(err, "Invalid path '%s'", filePath)
+	}
+
+	fileId := normalizedPath[1+len(t.RootDir):]
 
 	startTime := time.Now()
 
 	mw := imagick.NewMagickWand()
 	defer mw.Destroy()
 
-	err := mw.ReadImage(filePath)
+	err = mw.ReadImage(normalizedPath)
 
 	if err != nil {
-		return utils.WrapError(err, "Cannot read file '%s'", filePath)
+		return utils.WrapError(err, "Cannot read file '%s'", normalizedPath)
 	}
 
 	thumbKey := makeCacheKey(fileId)
