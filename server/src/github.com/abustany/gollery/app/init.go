@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/abustany/gollery/monitor"
 	"github.com/abustany/gollery/thumbnailer"
 	"github.com/robfig/revel"
 	"github.com/robfig/revel/modules/jobs/app/jobs"
@@ -12,6 +13,7 @@ const (
 	GOLLERY_CONFIG_CACHE_DIR = "gollery.cache_dir"
 )
 
+var Monitor *monitor.Monitor
 var Thumbnailer *thumbnailer.Thumbnailer
 
 func init() {
@@ -52,7 +54,15 @@ func initServices() {
 
 	var err error
 
-	Thumbnailer, err = thumbnailer.NewThumbnailer(rootdir, cachedir)
+	Monitor, err = monitor.NewMonitor()
+
+	if err != nil {
+		panic("Cannot initalize file monitoring: " + err.Error())
+	}
+
+	Monitor.Watch(rootdir)
+
+	Thumbnailer, err = thumbnailer.NewThumbnailer(rootdir, cachedir, Monitor)
 
 	if err != nil {
 		panic("Cannot initialize thumbnailer service: " + err.Error())
@@ -65,12 +75,6 @@ func initServices() {
 
 		if err != nil {
 			revel.ERROR.Printf("Cannot check the thumbnail cache: %s", err)
-		}
-
-		err = Thumbnailer.SetupMonitors()
-
-		if err != nil {
-			revel.ERROR.Printf("Cannot start file monitoring for the thumbnailer: %s", err)
 		}
 	}))
 }

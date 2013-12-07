@@ -3,14 +3,13 @@ package thumbnailer
 import (
 	"crypto/sha1"
 	"fmt"
+	"github.com/abustany/gollery/monitor"
 	"github.com/abustany/gollery/utils"
 	"github.com/gographics/imagick/imagick"
-	"github.com/howeyc/fsnotify"
 	"github.com/robfig/revel"
 	"io"
 	"os"
 	"path"
-	"path/filepath"
 	"runtime"
 	"strings"
 	"sync"
@@ -26,12 +25,11 @@ const (
 type Thumbnailer struct {
 	RootDir           string
 	CacheDir          string
-	monitor           *fsnotify.Watcher
 	thumbnailingQueue chan string
 	queuedItems       map[string]bool
 	queuedItemsMutex  sync.Mutex
-	watchedDirs       map[string]bool
-	watchedDirsMutex  sync.Mutex
+	monitor           *monitor.Monitor
+	monitorEvents     chan monitor.Event
 }
 
 func init() {
@@ -115,74 +113,36 @@ func (t *Thumbnailer) checkCacheDir(dirPath string) ([]string, error) {
 	return allThumbKeys, nil
 }
 
-func (t *Thumbnailer) isWatchedDirectory(filePath string) bool {
-	t.watchedDirsMutex.Lock()
-	defer t.watchedDirsMutex.Unlock()
-
-	_, watched := t.watchedDirs[filePath]
-
-	return watched
-}
-
-func (t *Thumbnailer) fileMonitorRoutine() {
-	for {
-		select {
-		case ev := <-t.monitor.Event:
-			revel.TRACE.Printf("Thumbnailer: file event: %s", ev)
-
-			basename := path.Base(ev.Name)
-
-			if len(basename) > 0 && basename[0] == '.' {
-				revel.TRACE.Printf("Skipping event for hidden file %s", ev.Name)
+func (t *Thumbnailer) monitorEventsRoutine() {
+	for x := range t.monitorEvents {
+		if ev, ok := x.(*monitor.DeleteEvent); ok {
+			if ev.IsDirectory {
+				t.ScheduleThumbnail(THUMBNAILER_CLEANUP_JOB_ID)
 				continue
 			}
 
-			if ev.IsDelete() || ev.IsRename() {
-				// We can't know if it was a directory or a file... Try to figure out
+			t.DeleteThumbnail(ev.Path())
+			continue
+		}
 
-				if t.isWatchedDirectory(ev.Name) {
-					// Crap, a directory was deleted, and we can't list it anymore... We need
-					// queue a full cleanup
-					t.ScheduleThumbnail(THUMBNAILER_CLEANUP_JOB_ID)
-					continue
-				}
-
-				// It was not a watched directory... So it must have been a file
-				t.DeleteThumbnail(ev.Name)
-				continue
-			}
-
-			info, err := os.Stat(ev.Name)
-
-			if err != nil {
-				revel.ERROR.Printf("Cannot get file information for %s: %s", ev.Name, err)
-				continue
-			}
-
-			if info.Mode().IsRegular() {
-				t.ScheduleThumbnail(ev.Name)
-			} else if info.IsDir() {
-				if !ev.IsCreate() {
-					continue
-				}
-
-				err := t.setupDirMonitor(ev.Name, info, nil)
+		if ev, ok := x.(*monitor.CreateEvent); ok {
+			if ev.Info.Mode().IsRegular() {
+				t.ScheduleThumbnail(ev.Path())
+			} else if ev.Info.IsDir() {
+				err := t.monitor.Watch(ev.Path())
 
 				if err != nil {
-					revel.ERROR.Printf("Cannot setup a file monitor on %s: %s", ev.Name, err)
+					revel.ERROR.Printf("Cannot setup a file monitor on %s: %s", ev.Path(), err)
 					continue
 				}
 
-				_, err = t.checkCacheDir(ev.Name)
+				_, err = t.checkCacheDir(ev.Path())
 
 				if err != nil {
-					revel.ERROR.Printf("Cannot create thumbnails for directory '%s': %s", ev.Name, err)
+					revel.ERROR.Printf("Cannot create thumbnails for directory '%s': %s", ev.Path(), err)
 				}
-			} else {
-				revel.INFO.Printf("Skipping file event for file of unknown type %s", ev.Name)
 			}
-		case err := <-t.monitor.Error:
-			revel.ERROR.Printf("Thumbnailer: file monitoring error: %s", err)
+			continue
 		}
 	}
 }
@@ -208,30 +168,25 @@ func (t *Thumbnailer) thumbnailQueueRoutine() {
 	}
 }
 
-func NewThumbnailer(rootDir string, cacheDir string) (*Thumbnailer, error) {
+func NewThumbnailer(rootDir string, cacheDir string, mon *monitor.Monitor) (*Thumbnailer, error) {
 	t := &Thumbnailer{
 		RootDir:           rootDir,
 		CacheDir:          cacheDir,
 		thumbnailingQueue: make(chan string, 256),
 		queuedItems:       make(map[string]bool, 256),
-		watchedDirs:       map[string]bool{},
+		monitor:           mon,
+		monitorEvents:     make(chan monitor.Event, 256),
 	}
-
-	var err error
-
-	t.monitor, err = fsnotify.NewWatcher()
-
-	if err != nil {
-		return nil, utils.WrapError(err, "Cannot initialize file monitoring")
-	}
-
-	go t.fileMonitorRoutine()
 
 	revel.INFO.Printf("Starting %d thumbnailer routines", runtime.NumCPU())
 
 	for i := 0; i < runtime.NumCPU(); i++ {
 		go t.thumbnailQueueRoutine()
 	}
+
+	mon.Listen(t.monitorEvents)
+
+	go t.monitorEventsRoutine()
 
 	return t, nil
 }
@@ -290,36 +245,6 @@ func (t *Thumbnailer) CheckCache() error {
 	}
 
 	return nil
-}
-
-func (t *Thumbnailer) setupDirMonitor(path string, info os.FileInfo, err error) error {
-	if err != nil {
-		return err
-	}
-
-	if strings.HasPrefix(path, ".") {
-		return filepath.SkipDir
-	}
-
-	if !info.IsDir() {
-		return nil
-	}
-
-	err = t.monitor.Watch(path)
-
-	t.watchedDirsMutex.Lock()
-	t.watchedDirs[path] = true
-	t.watchedDirsMutex.Unlock()
-
-	if err == nil {
-		revel.INFO.Printf("Setup a directory monitor on '%s'", path)
-	}
-
-	return err
-}
-
-func (t *Thumbnailer) SetupMonitors() error {
-	return utils.WrapError(filepath.Walk(t.RootDir, t.setupDirMonitor), "Cannot setup monitoring")
 }
 
 func (t *Thumbnailer) ScheduleThumbnail(filePath string) {
