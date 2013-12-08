@@ -83,13 +83,76 @@ var App = {
 		}
 	},
 
+	sortPicturesByDate: function(pictures) {
+		// For each picture, parse the EXIF date (if any)
+		$.each(pictures, function(idx, pic) {
+			if (!pic.metadata) {
+				return;
+			}
+
+			var exifDate = pic.metadata['Exif.Photo.DateTimeOriginal'];
+
+			if (!exifDate) {
+				return;
+			}
+
+			// Format of the date is 2013:11:13 11:14:12
+
+			if (exifDate.length != 19) {
+				console.log('Cannot parse EXIF date ' + exifDate + ': invalid length');
+				return;
+			}
+
+			var yearStr = exifDate.slice(0, 4);
+			var monthStr = exifDate.slice(5, 7);
+			var dayStr = exifDate.slice(8, 10);
+			var hourStr = exifDate.slice(11, 13);
+			var minuteStr = exifDate.slice(14, 16);
+			var secondStr = exifDate.slice(17, 19);
+
+			date = new Date(yearStr, monthStr, dayStr, hourStr, minuteStr, secondStr);
+
+			if (isNaN(date.getTime())) {
+				console.log('Cannot parse EXIF date ' + exifDate);
+				return;
+			}
+
+			pic.date = date;
+		});
+
+		pictures.sort(function (a, b) {
+			// If we have no date at all, fallback on filename lexical sort
+			if (!a.date && !b.date) {
+				return (a.path === b.path ? 0 : (a.path < b.path ? -1 : 1));
+			}
+
+			if (a.date && !b.date) {
+				return -1;
+			}
+
+			if (!a.date && b.date) {
+				return 1;
+			}
+
+			var ta = a.date.getTime();
+			var tb = b.date.getTime();
+
+			return (ta === tb ? 0 : (ta < tb ? -1 : 1));
+		});
+	},
+
 	loadAlbum: function(name, cb) {
+		var app = this;
+
 		if (this.album && this.album.name === name) {
 			cb(this.album);
 		}
 
 		$.getJSON('/albums/' + name, function(data) {
-			this.album = data;
+			app.sortPicturesByDate(data.pictures);
+
+			app.album = data;
+
 			cb(data);
 		});
 	},
