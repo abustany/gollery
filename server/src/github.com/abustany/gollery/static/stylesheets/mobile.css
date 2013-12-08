@@ -31,13 +31,13 @@
   margin-left: 0px; }
 
 /* line 24, ../sass/mobile.scss */
-#sidebar-hide-box {
+#sidebar-toggle-box {
   position: absolute;
   top: calc(100% - 2em);
   top: -moz-calc(100% - 2em); }
 
 /* line 30, ../sass/mobile.scss */
-#sidebar-hide-button {
+#sidebar-toggle-button {
   -webkit-transform: rotate(-90deg);
   -moz-transform: rotate(-90deg);
   -ms-transform: rotate(-90deg);
@@ -56,14 +56,14 @@
 
 /* actually "shown" on mobile... */
 /* line 43, ../sass/mobile.scss */
-.sidebar-hidden #sidebar {
+.sidebar-toggled #sidebar {
   -webkit-transform: translateY(0px);
   -moz-transform: translateY(0px);
   -ms-transform: translateY(0px);
   -o-transform: translateY(0px);
   transform: translateY(0px); }
 /* line 47, ../sass/mobile.scss */
-.sidebar-hidden #sidebar-hide-button {
+.sidebar-toggled #sidebar-toggle-button {
   -webkit-transform: rotate(90deg);
   -moz-transform: rotate(90deg);
   -ms-transform: rotate(90deg);

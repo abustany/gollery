@@ -21,13 +21,13 @@
 	margin-left: 0px;
 }
 
-#sidebar-hide-box {
+#sidebar-toggle-box {
 	position: absolute;
 	top: calc(100% - 2em);
 	top: -moz-calc(100% - 2em);
 }
 
-#sidebar-hide-button {
+#sidebar-toggle-button {
 	@include rotateZ(-90deg);
 	@include single-transition("transform", 1s);
 }
@@ -39,12 +39,12 @@
 }
 
 /* actually "shown" on mobile... */
-.sidebar-hidden {
+.sidebar-toggled {
 	#sidebar {
 		@include translateY(0px);
 	}
 
-	#sidebar-hide-button {
+	#sidebar-toggle-button {
 		@include rotateZ(90deg);
 	}
 }

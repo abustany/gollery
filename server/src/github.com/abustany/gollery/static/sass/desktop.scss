@@ -31,14 +31,14 @@ $sidebar_peek_hidpi: 80px;
 	@include single-transition("margin-left", 1s);
 }
 
-#sidebar-hide-box {
+#sidebar-toggle-box {
 	position: absolute;
 	top: 0;
 	width: inherit;
 	text-align: right;
 }
 
-#sidebar-hide-button {
+#sidebar-toggle-button {
 	@include single-transition("transform", 1s);
 }
 
@@ -48,7 +48,7 @@ $sidebar_peek_hidpi: 80px;
 	overflow: scroll;
 }
 
-.sidebar-hidden {
+.sidebar-toggled {
 	#sidebar {
 		@include translateX(-$sidebar_size_normal + $sidebar_peek_normal);
 
@@ -65,7 +65,7 @@ $sidebar_peek_hidpi: 80px;
 		}
 	}
 
-	#sidebar-hide-button {
+	#sidebar-toggle-button {
 		@include rotateZ(180deg);
 	}
 }

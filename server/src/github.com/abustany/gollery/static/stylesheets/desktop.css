@@ -28,14 +28,14 @@
       margin-left: 600px; } }
 
 /* line 34, ../sass/desktop.scss */
-#sidebar-hide-box {
+#sidebar-toggle-box {
   position: absolute;
   top: 0;
   width: inherit;
   text-align: right; }
 
 /* line 41, ../sass/desktop.scss */
-#sidebar-hide-button {
+#sidebar-toggle-button {
   -webkit-transition: -webkit-transform 1s;
   -moz-transition: -moz-transform 1s;
   -o-transition: -o-transform 1s;
@@ -48,7 +48,7 @@
   overflow: scroll; }
 
 /* line 52, ../sass/desktop.scss */
-.sidebar-hidden #sidebar {
+.sidebar-toggled #sidebar {
   -webkit-transform: translateX(-160px);
   -moz-transform: translateX(-160px);
   -ms-transform: translateX(-160px);
@@ -56,21 +56,21 @@
   transform: translateX(-160px); }
   @media (min-resolution: 200dpi) {
     /* line 52, ../sass/desktop.scss */
-    .sidebar-hidden #sidebar {
+    .sidebar-toggled #sidebar {
       -webkit-transform: translateX(-520px);
       -moz-transform: translateX(-520px);
       -ms-transform: translateX(-520px);
       -o-transform: translateX(-520px);
       transform: translateX(-520px); } }
 /* line 60, ../sass/desktop.scss */
-.sidebar-hidden #content {
+.sidebar-toggled #content {
   margin-left: 40px; }
   @media (min-resolution: 200dpi) {
     /* line 60, ../sass/desktop.scss */
-    .sidebar-hidden #content {
+    .sidebar-toggled #content {
       margin-left: 80px; } }
 /* line 68, ../sass/desktop.scss */
-.sidebar-hidden #sidebar-hide-button {
+.sidebar-toggled #sidebar-toggle-button {
   -webkit-transform: rotate(180deg);
   -moz-transform: rotate(180deg);
   -ms-transform: rotate(180deg);

@@ -5,6 +5,7 @@
 		<link rel="stylesheet" href="stylesheets/base.css"/>
 		<link rel="stylesheet" media="(max-width: 600px)" href="stylesheets/mobile.css"/>
 		<link rel="stylesheet" media="(min-width: 601px)" href="stylesheets/desktop.css"/>
+		<script data-main="js/main" src="js/requirejs-2.1.9.js"></script>
 
 		<meta name="viewport" content="width=device-width, init-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="edge" />
@@ -12,8 +13,8 @@
 	<body class="ui-mode-main">
 		<div class="ui-pane" id="pane-main">
 			<div id="sidebar">
-				<div id="sidebar-hide-box">
-					<input type="button" id="sidebar-hide-button" value="&lt;" />
+				<div id="sidebar-toggle-box">
+					<input type="button" id="sidebar-toggle-button" value="&lt;" />
 				</div>
 				<br/>
 				This is the sidebar<br/>
@@ -31,102 +32,5 @@
 				<input type="button" id="viewer-quit-button" value="Go back"/>
 			</div>
 		</div>
-		<script type="text/javascript">
-function addClass(item, klass) {
-	item.className += ' ';
-	item.className += klass;
-}
-
-function removeClass(item, klass) {
-	var classes = item.className.split(' ');
-	removeFromArray(classes, klass);
-	item.className = classes.join(' ');
-}
-
-function showImage(filename) {
-	removeClass(document.body, 'ui-mode-main');
-	addClass(document.body, 'ui-mode-viewer');
-}
-
-function makeImageClick(img) {
-	return function() {
-		showImage(img.src);
-	};
-}
-
-function createFrame(filename) {
-	var frame = document.createElement('div');
-	frame.setAttribute('class', 'frame');
-
-	var innerFrame = document.createElement('div');
-	innerFrame.setAttribute('class', 'frame-inner');
-
-	var img = document.createElement('img');
-	img.src = filename;
-
-	img.addEventListener('click', makeImageClick(img));
-
-	innerFrame.appendChild(img);
-	frame.appendChild(innerFrame);
-
-	return frame;
-}
-
-function createPictures() {
-	var list = document.getElementById('content');
-
-	for (var i = 0; i < 100; ++i) {
-		imageType = (Math.random() > .5 ? 'v' : 'h');
-		var frame = createFrame('image' + imageType + '.png');
-		list.appendChild(frame);
-	}
-}
-
-function createAlbums() {
-	var list = document.getElementById('album-list');
-
-	for (var i = 0; i < 200; ++i) {
-		var li = document.createElement('li');
-		li.appendChild(document.createTextNode('Album ' + i));
-		list.appendChild(li);
-	}
-}
-
-function removeFromArray(a, item) {
-	var i = a.indexOf(item);
-
-	if (i === -1) {
-		return false;
-	}
-
-	a.splice(i, 1);
-
-	return true;
-}
-
-window.onload = function() {
-	createAlbums();
-	createPictures();
-
-	var toggleButton = document.getElementById('sidebar-hide-button');
-
-	toggleButton.addEventListener('click', function() {
-		var classes = document.body.className.split(' ');
-
-		if (!removeFromArray(classes, 'sidebar-hidden')) {
-			classes.push('sidebar-hidden');
-		}
-
-
-		document.body.className = classes.join(' ');
-	});
-
-	var quitViewerButton = document.getElementById('viewer-quit-button');
-	quitViewerButton.addEventListener('click', function() {
-		removeClass(document.body, 'ui-mode-viewer');
-		addClass(document.body, 'ui-mode-main');
-	});
-};
-		</script>
 	</body>
 </html>
