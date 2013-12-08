@@ -9,6 +9,11 @@ module:jobs
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
+GET     /albums                                 Albums.Index()
+GET     /albums/*name                           Albums.Show()
+
+GET     /thumbnails/*name                       Thumbnails.Thumbnail()
+
 # Map static resources from the /app/public folder to the /public path
 GET     /public/*filepath                       Static.Serve("public")
 
