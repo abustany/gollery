@@ -371,3 +371,55 @@ func (t *Thumbnailer) DeleteThumbnail(filePath string) error {
 func (t *Thumbnailer) ThumbnailQueueSize() int {
 	return len(t.queuedItems)
 }
+
+func (t *Thumbnailer) HasThumbnail(filePath string) (bool, error) {
+	normalizedPath, err := t.normalizePath(filePath)
+
+	if err != nil {
+		return false, utils.WrapError(err, "Cannot normalize path")
+	}
+
+	fileId := normalizedPath[1+len(t.RootDir):]
+	thumbKey := makeCacheKey(fileId)
+	thumbPath := path.Join(t.CacheDir, thumbKey)
+
+	_, err = os.Stat(thumbPath)
+
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+
+	if err != nil {
+		return false, utils.WrapError(err, "Cannot check if thumbnail exists")
+	}
+
+	return true, nil
+}
+
+func (t *Thumbnailer) GetThumbnail(filePath string) (*os.File, error) {
+	normalizedPath, err := t.normalizePath(filePath)
+
+	if err != nil {
+		return nil, utils.WrapError(err, "Cannot normalize path")
+	}
+
+	if normalizedPath == t.RootDir {
+		return nil, fmt.Errorf("Invalid path")
+	}
+
+	fileId := normalizedPath[1+len(t.RootDir):]
+	thumbKey := makeCacheKey(fileId)
+	thumbPath := path.Join(t.CacheDir, thumbKey)
+
+	fd, err := os.Open(thumbPath)
+
+	if os.IsNotExist(err) {
+		return nil, nil
+	}
+
+	if err != nil {
+		return nil, utils.WrapError(err, "Cannot open thumbnail")
+	}
+
+	return fd, nil
+}
