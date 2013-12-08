@@ -13,6 +13,7 @@ const (
 	GOLLERY_CONFIG_CACHE_DIR = "gollery.cache_dir"
 )
 
+var RootDir string
 var Monitor *monitor.Monitor
 var Thumbnailer *thumbnailer.Thumbnailer
 
@@ -40,7 +41,9 @@ func init() {
 }
 
 func initServices() {
-	rootdir, found := revel.Config.String(GOLLERY_CONFIG_ROOT_DIR)
+	var found bool
+
+	RootDir, found = revel.Config.String(GOLLERY_CONFIG_ROOT_DIR)
 
 	if !found {
 		panic("Missing configuration parameter: " + GOLLERY_CONFIG_ROOT_DIR)
@@ -60,9 +63,9 @@ func initServices() {
 		panic("Cannot initalize file monitoring: " + err.Error())
 	}
 
-	Monitor.Watch(rootdir)
+	Monitor.Watch(RootDir)
 
-	Thumbnailer, err = thumbnailer.NewThumbnailer(rootdir, cachedir, Monitor)
+	Thumbnailer, err = thumbnailer.NewThumbnailer(RootDir, cachedir, Monitor)
 
 	if err != nil {
 		panic("Cannot initialize thumbnailer service: " + err.Error())
