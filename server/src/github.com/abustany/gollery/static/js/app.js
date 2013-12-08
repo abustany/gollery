@@ -21,29 +21,32 @@ var App = {
 	},
 
 	getUiMode: function() {
+		var mode = null;
+
 		$.each(document.body.className.split(' '), function(idx, val) {
 			if (val.indexOf('ui-mode-') === 0) {
-				return val.slice('ui-mode-'.length);
+				mode = val.slice('ui-mode-'.length);
+				return;
 			}
-
-			return null;
 		});
+
+		return mode;
 	},
 
 	setUiMode: function(mode) {
-		var $this = $(this);
+		var $body = $(document.body);
 		var modeName = 'ui-mode-' + mode;
 		var currentMode = this.getUiMode();
 
-		if (this.uiMode) {
+		if (currentMode) {
 			if (currentMode === mode) {
 				return;
 			}
 
-			$this.removeClass('ui-mode-' + currentMode);
+			$body.removeClass('ui-mode-' + currentMode);
 		}
 
-		$this.addClass(modeName);
+		$body.addClass(modeName);
 	},
 
 	dispatchHash: function() {
