@@ -49,6 +49,10 @@ var App = {
 		$body.addClass(modeName);
 	},
 
+	hashRoutes: {
+		'browse': 'browseAlbum',
+	},
+
 	dispatchHash: function() {
 		var hash = document.location.hash;
 
@@ -59,8 +63,21 @@ var App = {
 
 		hash = hash.slice(1); // remove the leading #
 
-		if (hash.indexOf('browse:') === 0) {
-			this.browseAlbum(hash.slice('browse:'.length));
+		for (x in this.hashRoutes) {
+			var prefix = x + ':';
+
+			if (hash.indexOf(prefix) !== 0) {
+				continue;
+			}
+
+			var f = this[this.hashRoutes[x]];
+
+			if (f === undefined) {
+				console.log('Undefined route function: ' + this.hashRoutes[x]);
+				return;
+			}
+
+			f.call(this, hash.slice(prefix.length));
 		}
 	},
 
