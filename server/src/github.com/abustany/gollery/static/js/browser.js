@@ -31,7 +31,7 @@ Browser.prototype = {
 		frame.appendChild(innerFrame);
 
 		var img = document.createElement('img');
-		img.src = document.location.origin + '/thumbnails/' + this.album + '/' + pic.path;
+		img.src = document.location.origin + '/thumbnails/small/' + this.album + '/' + pic.path;
 		innerFrame.appendChild(img);
 
 		$('#content').append(frame);

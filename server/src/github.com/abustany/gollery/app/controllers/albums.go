@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/abustany/gollery/app"
+	"github.com/abustany/gollery/thumbnailer"
 	"github.com/abustany/gollery/utils"
 	"github.com/robfig/revel"
 	"net/http"
@@ -79,7 +80,7 @@ func (c *Albums) Show(name string) revel.Result {
 	for _, info := range fis {
 		filePath := path.Join(dirPath, info.Name())
 
-		hasThumbnail, err := app.Thumbnailer.HasThumbnail(filePath)
+		hasThumbnail, err := app.Thumbnailer.HasThumbnail(filePath, thumbnailer.THUMB_SMALL)
 
 		if err != nil {
 			c.Response.Status = http.StatusInternalServerError
