@@ -20,13 +20,14 @@ Browser.prototype = {
 		var frame = document.createElement('div');
 		frame.className = 'frame';
 
-		var innerFrame = document.createElement('div');
-		innerFrame.className = 'frame-inner';
-		frame.appendChild(innerFrame);
+		var a = document.createElement('a');
+		a.className = 'frame-inner';
+		a.href = '#view:' + this.album.name + '/' + pic.path;
+		frame.appendChild(a);
 
 		var img = document.createElement('img');
-		img.src = document.location.origin + '/thumbnails/small/' + this.album + '/' + pic.path;
-		innerFrame.appendChild(img);
+		img.src = document.location.origin + '/thumbnails/small/' + this.album.name + '/' + pic.path;
+		a.appendChild(img);
 
 		$('#content').append(frame);
 	}

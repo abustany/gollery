@@ -1,4 +1,4 @@
-define(['browser', 'jquery', 'sidebar'], function(Browser, $, Sidebar) {
+define(['browser', 'jquery', 'sidebar', 'viewer'], function(Browser, $, Sidebar, Viewer) {
 
 var App = {
 	start: function() {
@@ -8,6 +8,7 @@ var App = {
 
 		app.sidebar = new Sidebar();
 		app.browser = new Browser();
+		app.viewer = new Viewer();
 
 		app.setUiMode('main');
 
@@ -51,6 +52,7 @@ var App = {
 
 	hashRoutes: {
 		'browse': 'browseAlbum',
+		'view': 'viewPicture'
 	},
 
 	dispatchHash: function() {
@@ -102,6 +104,20 @@ var App = {
 				app.browser.browse(data);
 			});
 		}
+	},
+
+	viewPicture: function(path) {
+		var app = this;
+
+		this.setUiMode('viewer');
+
+		var idx = path.lastIndexOf('/');
+		var album = path.slice(0, idx);
+		var filename = path.slice(1+idx);
+
+		app.loadAlbum(album, function(data) {
+			app.viewer.view(data, filename);
+		});
 	}
 };
 
