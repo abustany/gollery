@@ -146,6 +146,7 @@ var App = {
 
 		if (this.album && this.album.name === name) {
 			cb(this.album);
+			return;
 		}
 
 		$.getJSON('/albums/' + name, function(data) {
