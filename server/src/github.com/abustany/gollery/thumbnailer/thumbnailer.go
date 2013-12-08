@@ -71,6 +71,11 @@ func (t *Thumbnailer) checkCacheDir(dirPath string) ([]string, error) {
 	for _, f := range fis {
 		fPath := path.Join(dirPath, f.Name())
 
+		if strings.HasPrefix(f.Name(), ".") {
+			revel.TRACE.Printf("Skipping hidden file %s while checking thumbnails", fPath)
+			continue
+		}
+
 		if f.IsDir() {
 			childThumbKeys, err := t.checkCacheDir(fPath)
 
