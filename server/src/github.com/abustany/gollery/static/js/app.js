@@ -81,8 +81,27 @@ var App = {
 		}
 	},
 
+	loadAlbum: function(name, cb) {
+		if (this.album && this.album.name === name) {
+			cb(this.album);
+		}
+
+		$.getJSON('/albums/' + name, function(data) {
+			this.album = data;
+			cb(data);
+		});
+	},
+
 	browseAlbum: function(album) {
-		this.browser.browse(album);
+		var app = this;
+
+		app.setUiMode('main');
+
+		if (album) {
+			app.loadAlbum(album, function(data) {
+				app.browser.browse(data);
+			});
+		}
 	}
 };
 

@@ -7,18 +7,12 @@ Browser.prototype = {
 	browse: function(album) {
 		var browser = this;
 
+		browser.album = album;
+
 		$('#content').html('');
 
-		if (album === null) {
-			return;
-		}
-
-		$.getJSON('/albums/' + album, function(data) {
-			browser.album = album;
-
-			$.each(data.pictures, function(idx, pic) {
-				browser.addPicture(pic);
-			});
+		$.each(album.pictures, function(idx, pic) {
+			browser.addPicture(pic);
 		});
 	},
 
