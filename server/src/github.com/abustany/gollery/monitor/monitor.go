@@ -177,3 +177,18 @@ func (m *Monitor) Listen(eventChannel chan<- Event) {
 func (m *Monitor) Unlisten(eventChannel chan<- Event) {
 	delete(m.listeners, eventChannel)
 }
+
+func (m *Monitor) WatchedDirectories() []string {
+	m.watchedDirsMutex.Lock()
+	defer m.watchedDirsMutex.Unlock()
+
+	dirs := make([]string, len(m.watchedDirs))
+	i := 0
+
+	for dir, _ := range m.watchedDirs {
+		dirs[i] = dir
+		i++
+	}
+
+	return dirs
+}
