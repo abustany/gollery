@@ -8,7 +8,7 @@ var App = {
 
 		app.sidebar = new Sidebar();
 		app.browser = new Browser();
-		app.viewer = new Viewer();
+		app.viewer = new Viewer(app);
 
 		app.setUiMode('main');
 
@@ -209,6 +209,22 @@ var App = {
 		app.loadAlbum(album, function(data) {
 			app.viewer.view(data, filename);
 		});
+	},
+
+	buildHash: function(route) {
+		var hash = route.action;
+
+		if (route.options) {
+			for (o in route.options) {
+				hash += ',';
+				hash += o;
+			}
+		}
+
+		hash += ':';
+		hash += route.param;
+
+		return hash;
 	}
 };
 

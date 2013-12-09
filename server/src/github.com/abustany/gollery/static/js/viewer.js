@@ -1,7 +1,9 @@
 define(['jquery'], function($) {
 
-function Viewer() {
+function Viewer(app) {
 	var viewer = this;
+
+	viewer.app = app;
 
 	$('#viewer-quit-button').click(function() {
 		viewer.goBackToAlbums();
@@ -42,6 +44,12 @@ Viewer.prototype = {
 			return;
 		}
 
+		if (this.previousRoute) {
+			document.location.hash = this.app.buildHash(this.previousRoute);
+			this.previousRoute = null;
+			return;
+		}
+
 		document.location.hash = '#browse:' + this.album.name;
 
 		this.album = null;
@@ -51,6 +59,10 @@ Viewer.prototype = {
 	view: function(album, filename) {
 		this.album = album;
 		this.filename = filename;
+
+		if (this.app.previousRoute && this.app.previousRoute.action !== 'view') {
+			this.previousRoute = this.app.previousRoute;
+		}
 
 		var imgUrl = document.location.origin + '/thumbnails/large/' + album.name + '/' + filename;
 
