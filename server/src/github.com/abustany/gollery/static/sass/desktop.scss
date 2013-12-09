@@ -11,6 +11,8 @@ $sidebar_peek_hidpi: 80px;
 	width: $sidebar_size_normal;
 	height: 100%;
 	position: fixed;
+	left: 0px;
+	top: 0px;
 	@include single-transition("transform", 1s);
 
 	@include respond-to('hidpi') {
