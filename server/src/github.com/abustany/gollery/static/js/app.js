@@ -65,10 +65,27 @@ var App = {
 
 		hash = hash.slice(1); // remove the leading #
 
-		for (x in this.hashRoutes) {
-			var prefix = x + ':';
+		var actionName;
+		var actionParam;
+		var actionOptions = {};
 
-			if (hash.indexOf(prefix) !== 0) {
+		var colIdx = hash.indexOf(':');
+
+		if (colIdx == -1) {
+			actionName = hash;
+		} else {
+			var tokens = hash.slice(0, colIdx).split(',');
+			actionName = tokens.shift();
+
+			$.each(tokens, function(idx, val) {
+				actionOptions[val] = true;
+			});
+
+			actionParam = hash.slice(1 + colIdx);
+		}
+
+		for (x in this.hashRoutes) {
+			if (x !== actionName) {
 				continue;
 			}
 
@@ -79,7 +96,7 @@ var App = {
 				return;
 			}
 
-			f.call(this, hash.slice(prefix.length));
+			f.call(this, actionParam, actionOptions);
 		}
 	},
 
