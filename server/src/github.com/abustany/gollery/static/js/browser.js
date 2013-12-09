@@ -60,7 +60,7 @@ Browser.prototype = {
 
 				var iconHtml = '';
 				iconHtml += '<a href="#view:' + album.name + '/' + pic.path + '">';
-				iconHtml += '<img src="' + thumbUrl + '"/>';
+				iconHtml += '<img id="browser-img-' + idx + '" src="' + thumbUrl + '"/>';
 				iconHtml += '</a>';
 
 				var icon = Leaflet.divIcon({
@@ -73,6 +73,37 @@ Browser.prototype = {
 				});
 
 				marker.addTo(browser.markers);
+
+				// If we can, use the EXIF metadata to compute the center of the picture,
+				// and a better clip rectangle that from the top left
+				if (pic.metadata) {
+					var width = Number(pic.metadata['Exif.Photo.PixelXDimension']);
+					var height = Number(pic.metadata['Exif.Photo.PixelYDimension']);
+
+					if (width && height) {
+						var max;
+						var min;
+
+						if (width > height) {
+							max = width;
+							min = height;
+						} else {
+							max = height;
+							min = width;
+						}
+
+						var sz = 48;
+						var scale = sz/min;
+						var cx = width * scale / 2;
+						var cy = height * scale / 2;
+						var top = Math.round(cy - sz/2);
+						var right = Math.round(cx + sz/2);
+						var bottom = Math.round(cy + sz/2);
+						var left = Math.round(cx - sz/2);
+
+						$('#browser-img-' + idx).css('clip', 'rect(' + top + 'px, ' + right + 'px, ' + bottom + 'px, ' + left + 'px)');
+					}
+				}
 			}
 
 			browser.addPicture(pic);

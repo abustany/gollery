@@ -122,9 +122,18 @@ $browser_pane_rotate_duration: 0.2s;
 	max-height: 100%;
 }
 
+.browser-map-icon {
+	position: relative;
+}
+
 .browser-map-icon img {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+
 	max-height: 48px;
 	max-width: 48px;
+	clip: rect(0px, 48px, 48px, 0px);
 }
 
 .browser-no-album {
