@@ -21,8 +21,12 @@ $sidebar_peek_hidpi: 80px;
 }
 
 #content {
-	height: 100%;
-	overflow: scroll;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	overflow: hidden;
 
 	margin-left: $sidebar_size_normal;
 
@@ -69,5 +73,62 @@ $sidebar_peek_hidpi: 80px;
 
 	#sidebar-toggle-button {
 		@include rotateZ(180deg);
+	}
+}
+
+#browser-toolbar {
+	position: fixed;
+	right: 2em;
+	bottom: 1em;
+}
+
+.browser-pane {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	margin-left: inherit;
+	overflow: hidden;
+}
+
+$browser_pane_rotate_duration: 0.2s;
+
+#picture-list-pane {
+	@include rotateX(0deg);
+	@include single-transition("transform", $browser_pane_rotate_duration, ease, $browser_pane_rotate_duration);
+}
+
+#map-view-pane {
+	@include rotateX(90deg);
+	@include single-transition("transform", 0.2s, ease, 0.0s);
+}
+
+.browser-map-view {
+	#picture-list-pane {
+		@include rotateX(-90deg);
+		@include single-transition("transform", 0.2s, ease, 0.0s);
+	}
+
+	#map-view-pane {
+		@include rotateX(0deg);
+		@include single-transition("transform", 0.2s, ease, 0.2s);
+	}
+}
+
+#picture-list {
+	overflow: auto;
+	max-width: 100%;
+	max-height: 100%;
+}
+
+.browser-map-icon img {
+	max-height: 48px;
+	max-width: 48px;
+}
+
+.browser-no-album {
+	#browser-toolbar {
+		display: none;
 	}
 }

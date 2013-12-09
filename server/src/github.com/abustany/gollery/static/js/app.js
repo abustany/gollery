@@ -7,7 +7,7 @@ var App = {
 		console.log('Starting application');
 
 		app.sidebar = new Sidebar();
-		app.browser = new Browser();
+		app.browser = new Browser(app);
 		app.viewer = new Viewer(app);
 
 		app.setUiMode('main');
@@ -168,6 +168,80 @@ var App = {
 		});
 	},
 
+	parseGpsMetadata: function(pictures) {
+		var parseRational = function(data) {
+			var idx = data.indexOf('/');
+
+			if (idx === -1) {
+				return null;
+			}
+
+			var a = Number(data.slice(0, idx));
+			var b = Number(data.slice(1 + idx));
+
+			if (isNaN(a) || isNaN(b)) {
+				return null;
+			}
+
+			return a/b;
+		};
+
+		var parseCoord = function(data) {
+			var tokens = data.split(' ');
+
+			if (tokens.length !== 3) {
+				return null;
+			}
+
+			var deg = parseRational(tokens[0]);
+			var min = parseRational(tokens[1]);
+			var sec = parseRational(tokens[2]); // we'll ignore this for now
+
+			if (deg === null || min === null || sec === null) {
+				return null;
+			}
+
+			return deg + min / 60 + sec / 3600;
+		};
+
+		var parse = function(data, keyName) {
+			var coord = parseCoord(data[keyName]);
+
+			if (coord === null) {
+				return null;
+			}
+
+			var ref = data[keyName + 'Ref'];
+
+			switch (ref) {
+			case 'N':
+			case 'E':
+				return coord;
+			case 'S':
+			case 'W':
+				return -coord;
+			}
+
+			return null;
+		};
+
+		$.each(pictures, function(idx, pic) {
+
+			if (!pic.metadata) {
+				return;
+			}
+
+			var lat = parse(pic.metadata, 'Exif.GPSInfo.GPSLatitude');
+			var lon = parse(pic.metadata, 'Exif.GPSInfo.GPSLongitude');
+
+			if (!lat || !lon) {
+				return;
+			}
+
+			pic.gpsCoords = [lat, lon];
+		});
+	},
+
 	loadAlbum: function(name, cb) {
 		var app = this;
 
@@ -178,6 +252,7 @@ var App = {
 
 		$.getJSON('/albums/' + name, function(data) {
 			app.sortPicturesByDate(data.pictures);
+			app.parseGpsMetadata(data.pictures);
 
 			app.album = data;
 
@@ -185,15 +260,30 @@ var App = {
 		});
 	},
 
-	browseAlbum: function(album) {
+	browseAlbum: function(album, options) {
 		var app = this;
+		var $content = $('#content');
 
 		app.setUiMode('main');
+
+		$content.toggleClass('browser-no-album', !album);
 
 		if (album) {
 			app.loadAlbum(album, function(data) {
 				app.browser.browse(data);
 			});
+
+			var $toggleViewButton = $('#browser-map-button');
+
+			if (options.map) {
+				$content.addClass('browser-map-view');
+				$toggleViewButton.attr('value', 'List view');
+			} else {
+				$content.removeClass('browser-map-view');
+				$toggleViewButton.attr('value', 'Map view');
+			}
+		} else {
+			app.browser.browse(null);
 		}
 	},
 

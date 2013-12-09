@@ -5,6 +5,7 @@
 		<link rel="stylesheet" href="stylesheets/base.css"/>
 		<link rel="stylesheet" media="(max-width: 600px)" href="stylesheets/mobile.css"/>
 		<link rel="stylesheet" media="(min-width: 601px)" href="stylesheets/desktop.css"/>
+		<link rel="stylesheet" href="stylesheets/leaflet-0.7.1.css"/>
 		<script data-main="js/main" src="js/requirejs-2.1.9.js"></script>
 
 		<meta name="viewport" content="width=device-width, init-scale=1.0">
@@ -12,6 +13,17 @@
 	</head>
 	<body class="ui-mode-main">
 		<div class="ui-pane" id="pane-main">
+			<div id="content">
+				<div id="picture-list-pane" class="browser-pane">
+					<div id="picture-list">
+					</div>
+				</div>
+				<div id="map-view-pane" class="browser-pane">
+				</div>
+				<div id="browser-toolbar">
+					<input type="button" id="browser-map-button" value="Map view"/>
+				</div>
+			</div>
 			<div id="sidebar">
 				<div id="sidebar-toggle-box">
 					<input type="button" id="sidebar-toggle-button" value="&lt;" />
@@ -22,8 +34,6 @@
 					<ul id="album-list">
 					</ul>
 				</div>
-			</div>
-			<div id="content">
 			</div>
 		</div>
 
