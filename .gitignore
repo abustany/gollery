@@ -1,2 +1,3 @@
 .*.swp
 *~
+/src/gollery/conf/app.conf

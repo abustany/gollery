@@ -1,0 +1,73 @@
+###############################################################################
+# Gollery configuration file
+###############################################################################
+
+# 64-char random secret, used to sign client side cookies (to make sure the
+# client does not alter it). Generate for example with "pwgen -1nac 64"
+app.secret=dou6eef7Loosash7jei1iehu5iem2meV4vua0oideth6eitai0Eevangoh4uXiey
+
+# Listen address, leave empty for 0.0.0.0
+http.addr=
+
+# Port on which to listen
+http.port=9000
+
+# HTTPS configuration
+http.ssl=false
+http.sslcert=
+http.sslkey=
+
+# Directory where your pictures are stored. This will not be touched.
+gollery.root_dir = /where/my/pictures/are
+
+# Directory where gollery will store the generated thumbnails, among other
+# things. This directory must exist for gollery to be happy.
+gollery.cache_dir = /where/stuff/will/be/cached
+
+###############################################################################
+# No serviceable parts beyond this line
+###############################################################################
+
+app.name=gollery
+cookie.httponly=false
+cookie.prefix=gollery
+cookie.secure=false
+format.date=01/02/2006
+format.datetime=01/02/2006 15:04
+results.chunked=false
+
+log.trace.prefix = "TRACE "
+log.info.prefix  = "INFO  "
+log.warn.prefix  = "WARN  "
+log.error.prefix = "ERROR "
+
+# The default language of this application.
+i18n.default_language=en
+
+module.static=github.com/robfig/revel/modules/static
+
+module.jobs = github.com/robfig/revel/modules/jobs
+
+[dev]
+mode.dev=true
+results.pretty=true
+watch=true
+
+module.testrunner = github.com/robfig/revel/modules/testrunner
+
+log.trace.output = off
+log.info.output  = stderr
+log.warn.output  = stderr
+log.error.output = stderr
+
+[prod]
+mode.dev=false
+results.pretty=false
+watch=false
+
+module.testrunner =
+
+log.trace.output = off
+log.info.output  = off
+log.warn.output  = %(app.name)s.log
+log.error.output = %(app.name)s.log
