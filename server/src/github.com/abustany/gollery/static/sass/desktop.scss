@@ -132,3 +132,30 @@ $browser_pane_rotate_duration: 0.2s;
 		display: none;
 	}
 }
+
+#map-view {
+	width: 100%;
+	height: 100%;
+}
+
+#map-view-no-map {
+	width: 100%;
+	height: 100%;
+	display: none;
+}
+
+#map-view-no-map-inner {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.browser-no-map {
+	#map-view {
+		display: none;
+	}
+
+	#map-view-no-map {
+		display: table;
+	}
+}

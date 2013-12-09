@@ -11,7 +11,7 @@ function Browser(app) {
 		attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
 	});
 
-	browser.map = Leaflet.map('map-view-pane', {
+	browser.map = Leaflet.map('map-view', {
 		center: [52.5079, 13.4854],
 		zoom: 13
 	});
@@ -47,6 +47,8 @@ Browser.prototype = {
 		if (boundingBox !== null) {
 			browser.map.fitBounds(boundingBox);
 		}
+
+		$('#content').toggleClass('browser-no-map', !boundingBox);
 
 		browser.markers.clearLayers();
 
