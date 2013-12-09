@@ -1,4 +1,4 @@
-define(['jquery'], function($) {
+define(['hammer', 'jquery'], function(Hammer, $) {
 
 function Viewer(app) {
 	var viewer = this;
@@ -34,6 +34,16 @@ function Viewer(app) {
 			viewer.viewSibling(1);
 			break;
 		}
+	});
+
+	var h = $('#viewer-inner').hammer();
+
+	h.on('swiperight', function() {
+		viewer.viewSibling(-1);
+	});
+
+	h.on('swipeleft', function() {
+		viewer.viewSibling(1);
 	});
 }
 
