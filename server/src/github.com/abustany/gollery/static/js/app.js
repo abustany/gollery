@@ -187,6 +187,10 @@ var App = {
 		};
 
 		var parseCoord = function(data) {
+			if (!data) {
+				return null;
+			}
+
 			var tokens = data.split(' ');
 
 			if (tokens.length !== 3) {
