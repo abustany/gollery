@@ -80,6 +80,7 @@ $sidebar_peek_hidpi: 80px;
 	position: fixed;
 	right: 2em;
 	bottom: 1em;
+	@include translateZ(1px); /* Makes it appear on top of thumbs on iPad */
 }
 
 .browser-pane {
