@@ -96,6 +96,16 @@ var App = {
 				return;
 			}
 
+			if (this.route) {
+				this.previousRoute = this.route;
+			}
+
+			this.route = {
+				action: actionName,
+				param : actionParam,
+				options: actionOptions
+			};
+
 			f.call(this, actionParam, actionOptions);
 		}
 	},
