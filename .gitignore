@@ -1,3 +1,12 @@
 .*.swp
 *~
 /src/gollery/conf/app.conf
+/bin
+/pkg
+/src/gollery/static/.sass-cache
+# Some files there *are* in git, those from 3rd party libs
+/src/gollery/static/stylesheets/*.css
+/src/gollery/app/routes
+/src/gollery/app/tmp
+/src/code.google.com
+/src/github.com
