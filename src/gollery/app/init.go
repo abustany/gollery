@@ -1,10 +1,10 @@
 package app
 
 import (
-	"github.com/abustany/gollery/monitor"
-	"github.com/abustany/gollery/thumbnailer"
 	"github.com/robfig/revel"
 	"github.com/robfig/revel/modules/jobs/app/jobs"
+	"gollery/monitor"
+	"gollery/thumbnailer"
 	"runtime"
 )
 

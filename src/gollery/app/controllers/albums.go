@@ -2,10 +2,10 @@ package controllers
 
 import (
 	"github.com/abustany/goexiv"
-	"github.com/abustany/gollery/app"
-	"github.com/abustany/gollery/thumbnailer"
-	"github.com/abustany/gollery/utils"
 	"github.com/robfig/revel"
+	"gollery/app"
+	"gollery/thumbnailer"
+	"gollery/utils"
 	"net/http"
 	"os"
 	"path"

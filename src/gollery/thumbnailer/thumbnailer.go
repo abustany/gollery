@@ -3,10 +3,10 @@ package thumbnailer
 import (
 	"crypto/sha1"
 	"fmt"
-	"github.com/abustany/gollery/monitor"
-	"github.com/abustany/gollery/utils"
 	"github.com/gographics/imagick/imagick"
 	"github.com/robfig/revel"
+	"gollery/monitor"
+	"gollery/utils"
 	"io"
 	"os"
 	"path"

@@ -1,9 +1,9 @@
 package monitor
 
 import (
-	"github.com/abustany/gollery/utils"
 	"github.com/howeyc/fsnotify"
 	"github.com/robfig/revel"
+	"gollery/utils"
 	"os"
 	"path"
 	"path/filepath"
