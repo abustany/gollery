@@ -12,18 +12,15 @@ body {
 
 	@include respond-to('tablet') {
 		font-size: 200%;
-		color: green;
 	}
 
 	/* Smartphones ? */
 	@include respond-to('smartphone') {
 		font-size: 200%;
-		color: red;
 	}
 
 	@include respond-to('hidpi') {
 		font-size: 300%;
-		color: yellow;
 	}
 }
 
