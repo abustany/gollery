@@ -53,6 +53,12 @@ var ExifKeys = []string{
 	"Exif.Photo.PixelYDimension",
 	"Exif.Image.Copyright",
 	"Exif.Photo.UserComment",
+	"Exif.GPSInfo.GPSAltitudeRef",
+	"Exif.GPSInfo.GPSAltitude",
+	"Exif.GPSInfo.GPSLatitudeRef",
+	"Exif.GPSInfo.GPSLatitude",
+	"Exif.GPSInfo.GPSLongitudeRef",
+	"Exif.GPSInfo.GPSLongitude",
 }
 
 func (c *Albums) Index() revel.Result {
