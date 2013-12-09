@@ -18,6 +18,9 @@ function Browser(app) {
 
 	osmLayer.addTo(browser.map);
 
+	browser.markers = Leaflet.layerGroup();
+	browser.markers.addTo(browser.map);
+
 	$('#browser-map-button').click(function() {
 		browser.toggleMap();
 	});
@@ -45,6 +48,7 @@ Browser.prototype = {
 			browser.map.fitBounds(boundingBox);
 		}
 
+		browser.markers.clearLayers();
 
 		$.each(album.pictures, function(idx, pic) {
 			var g = pic.gpsCoords;
@@ -66,7 +70,7 @@ Browser.prototype = {
 					icon: icon
 				});
 
-				marker.addTo(browser.map);
+				marker.addTo(browser.markers);
 			}
 
 			browser.addPicture(pic);
