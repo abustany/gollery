@@ -1,4 +1,4 @@
-define(['hammer', 'jquery'], function(Hammer, $) {
+define(['common', 'hammer', 'jquery'], function(Common, Hammer, $) {
 
 function Viewer(app) {
 	var viewer = this;
@@ -45,6 +45,8 @@ function Viewer(app) {
 	h.on('swipeleft', function() {
 		viewer.viewSibling(1);
 	});
+
+	Common.dontScroll('#viewer');
 }
 
 Viewer.prototype = {
