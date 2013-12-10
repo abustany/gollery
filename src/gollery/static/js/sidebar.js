@@ -16,9 +16,12 @@ Sidebar.prototype = {
 	},
 
 	loadAlbums: function() {
+		var sidebar = this;
 		var albumList = $('#album-list');
 
 		$.getJSON('/albums/', function(data) {
+			data.sort(sidebar.albumCompareFunc);
+
 			$.each(data, function(idx, album) {
 				var li = document.createElement('li');
 				var a = document.createElement('a');
@@ -28,6 +31,10 @@ Sidebar.prototype = {
 				albumList.append(li);
 			});
 		});
+	},
+
+	albumCompareFunc: function(a, b) {
+		return a.name.localeCompare(b.name);
 	}
 };
 
