@@ -31,8 +31,9 @@ code base is still moving a lot, and many planned features are still missing.**
 ## Requirements
 
 * Go version 1.2
-* ImageMagick (required by the gographics/imagick module)
-* exiv2 (required by goexiv)
+* [ImageMagick](http://imagemagick.org/) (required by the gographics/imagick
+  module)
+* [exiv2](http://exiv2.org/) (required by goexiv)
 
 Those dependencies should be packaged in any distribution.
 
