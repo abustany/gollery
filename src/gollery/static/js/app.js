@@ -1,4 +1,6 @@
-define(['browser', 'jquery', 'sidebar', 'viewer'], function(Browser, $, Sidebar, Viewer) {
+define(['browser', 'i18n', 'jquery', 'sidebar', 'viewer'], function(Browser, I18N, $, Sidebar, Viewer) {
+
+var _ = I18N.G;
 
 var App = {
 	start: function() {
@@ -11,6 +13,8 @@ var App = {
 		app.viewer = new Viewer(app);
 
 		app.setUiMode('main');
+
+		I18N.setLocale(window.navigator.language);
 
 		console.log('Application started');
 
@@ -281,10 +285,10 @@ var App = {
 
 			if (options.map) {
 				$content.addClass('browser-map-view');
-				$toggleViewButton.attr('value', 'List view');
+				$toggleViewButton.attr('value', _('List view'));
 			} else {
 				$content.removeClass('browser-map-view');
-				$toggleViewButton.attr('value', 'Map view');
+				$toggleViewButton.attr('value', _('Map view'));
 			}
 		} else {
 			app.browser.browse(null);
