@@ -23,18 +23,17 @@ $sidebar_peek_hidpi: 80px;
 #content {
 	position: fixed;
 	top: 0px;
-	left: 0px;
 	right: 0px;
 	bottom: 0px;
 	overflow: hidden;
 
-	margin-left: $sidebar_size_normal;
+	left: $sidebar_size_normal;
 
 	@include respond-to('hidpi') {
-		margin-left: $sidebar_size_hidpi;
+		left: $sidebar_size_hidpi;
 	}
 
-	@include single-transition("margin-left", 1s);
+	@include single-transition("left", 1s);
 }
 
 #sidebar-toggle-box {
@@ -64,10 +63,10 @@ $sidebar_peek_hidpi: 80px;
 	}
 
 	#content {
-		margin-left: $sidebar_peek_normal;
+		left: $sidebar_peek_normal;
 
 		@include respond-to('hidpi') {
-			margin-left: $sidebar_peek_hidpi;
+			left: $sidebar_peek_hidpi;
 		}
 	}
 
@@ -77,14 +76,14 @@ $sidebar_peek_hidpi: 80px;
 }
 
 #browser-toolbar {
-	position: fixed;
+	position: absolute;
 	right: 2em;
 	bottom: 1em;
 	@include translateZ(1px); /* Makes it appear on top of thumbs on iPad */
 }
 
 .browser-pane {
-	position: fixed;
+	position: absolute;
 	top: 0px;
 	left: 0px;
 	right: 0px;
