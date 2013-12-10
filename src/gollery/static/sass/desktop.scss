@@ -39,8 +39,9 @@ $sidebar_peek_hidpi: 80px;
 #sidebar-toggle-box {
 	position: absolute;
 	top: 0;
-	width: inherit;
+	right: 0;
 	text-align: right;
+	@include translateZ(1px);
 }
 
 #sidebar-toggle-button {
