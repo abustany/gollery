@@ -112,7 +112,7 @@ Viewer.prototype = {
 			idx += pics.length;
 		}
 
-		document.location.hash = 'view:' + this.album.name + '/' + pics[idx].path;
+		document.location.hash = 'view:' + encodeURIComponent(this.album.name) + '/' + pics[idx].path;
 	}
 };
 
