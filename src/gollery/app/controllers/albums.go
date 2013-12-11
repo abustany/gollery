@@ -67,6 +67,7 @@ var ExifKeys = []string{
 func (c *Albums) Index() revel.Result {
 	watchedPaths := app.Monitor.WatchedDirectories()
 	dirs := make([]*AlbumInfo, 0, len(watchedPaths))
+	user := common.GetUser(c.Controller)
 
 	for _, dir := range watchedPaths {
 		if dir == common.RootDir || !strings.HasPrefix(dir, common.RootDir) {
@@ -79,6 +80,10 @@ func (c *Albums) Index() revel.Result {
 
 		if err != nil {
 			revel.ERROR.Printf("Cannot lookup cover for album '%s': %s", dir, err)
+		}
+
+		if !app.Metadata.CanUserSee(user, dir) {
+			continue
 		}
 
 		dirs = append(dirs, &AlbumInfo{
@@ -182,6 +187,12 @@ func (c *Albums) listPictures(name string) ([]os.FileInfo, error) {
 
 func (c *Albums) Show(name string) revel.Result {
 	revel.INFO.Printf("Loading album %s", name)
+
+	if !app.Metadata.CheckAlbumAccess(name, common.GetUser(c.Controller), c.Params.Query.Get("token")) {
+		c.Response.Status = http.StatusForbidden
+		c.Response.ContentType = "application/json"
+		return c.RenderJson(struct{}{})
+	}
 
 	fis, err := c.listPictures(name)
 

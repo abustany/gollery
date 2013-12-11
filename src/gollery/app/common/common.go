@@ -2,6 +2,7 @@ package common
 
 import (
 	"fmt"
+	"github.com/robfig/revel"
 	"path"
 	"strings"
 )
@@ -26,4 +27,35 @@ func NormalizePath(filePath string) (string, error) {
 	}
 
 	return path.Join(RootDir, filePath), nil
+}
+
+func AlbumNameFromDir(dir string) string {
+	normalizedPath, _ := NormalizePath(dir)
+
+	if normalizedPath == "" {
+		return ""
+	}
+
+	if normalizedPath == RootDir {
+		return ""
+	}
+
+	return normalizedPath[1+len(RootDir):]
+}
+
+func AlbumNameFromFile(file string) string {
+	return AlbumNameFromDir(path.Dir(file))
+}
+
+func GetUser(c *revel.Controller) string {
+	return c.Session[GOLLERY_SESSION_USER]
+}
+
+func SetUser(c *revel.Controller, user string) {
+	if user == "" {
+		delete(c.Session, GOLLERY_SESSION_USER)
+		return
+	}
+
+	c.Session[GOLLERY_SESSION_USER] = user
 }
