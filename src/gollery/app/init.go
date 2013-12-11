@@ -4,11 +4,13 @@ import (
 	"github.com/robfig/revel"
 	"github.com/robfig/revel/modules/jobs/app/jobs"
 	"gollery/app/common"
+	"gollery/metadata"
 	"gollery/monitor"
 	"gollery/thumbnailer"
 	"runtime"
 )
 
+var Metadata metadata.MetadataManager
 var Monitor *monitor.Monitor
 var Thumbnailer *thumbnailer.Thumbnailer
 
@@ -81,4 +83,10 @@ func initServices() {
 			revel.ERROR.Printf("Cannot check the thumbnail cache: %s", err)
 		}
 	}))
+
+	Metadata, err = metadata.NewFSMetadataManager(common.RootDir, Monitor)
+
+	if err != nil {
+		panic("Cannot initalize album metadata service: " + err.Error())
+	}
 }

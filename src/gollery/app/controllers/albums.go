@@ -75,6 +75,10 @@ func (c *Albums) Index() revel.Result {
 
 		dir = dir[1+len(common.RootDir):]
 
+		if !CheckAlbumAccess(app.Metadata, dir, c.Request) {
+			continue
+		}
+
 		cover, err := c.getAlbumCover(dir)
 
 		if err != nil {
@@ -182,6 +186,12 @@ func (c *Albums) listPictures(name string) ([]os.FileInfo, error) {
 
 func (c *Albums) Show(name string) revel.Result {
 	revel.INFO.Printf("Loading album %s", name)
+
+	if !CheckAlbumAccess(app.Metadata, name, c.Request) {
+		c.Response.Status = http.StatusForbidden
+		c.Response.ContentType = "application/json"
+		return c.RenderJson(struct{}{})
+	}
 
 	fis, err := c.listPictures(name)
 

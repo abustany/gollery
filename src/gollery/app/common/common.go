@@ -9,7 +9,6 @@ import (
 const (
 	GOLLERY_CONFIG_ROOT_DIR  = "gollery.root_dir"
 	GOLLERY_CONFIG_CACHE_DIR = "gollery.cache_dir"
-	GOLLERY_SESSION_USER     = "user"
 )
 
 var RootDir string
@@ -26,4 +25,22 @@ func NormalizePath(filePath string) (string, error) {
 	}
 
 	return path.Join(RootDir, filePath), nil
+}
+
+func AlbumNameFromDir(dir string) string {
+	normalizedPath, _ := NormalizePath(dir)
+
+	if normalizedPath == "" {
+		return ""
+	}
+
+	if normalizedPath == RootDir {
+		return ""
+	}
+
+	return normalizedPath[1+len(RootDir):]
+}
+
+func AlbumNameFromFile(file string) string {
+	return AlbumNameFromDir(path.Dir(file))
 }
