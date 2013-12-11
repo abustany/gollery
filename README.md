@@ -62,6 +62,75 @@ binary will not need those tools.
 For more advanced deployment options, refer to the [upstream revel
 documentation](http://robfig.github.io/revel/manual/deployment.html).
 
+## Access control
+Gollery uses a very (very) simple token system to grant access to albums. You
+could think of it as an authentication scheme using a username and no password.
+While that's totally insecure, it also makes Gollery way more family-compatible
+(no, they don't remember yet another password, nor have Facebook accounts).
+Making the authentication pluggable in the future to allow more secure schemes
+shouldn't be too hard.
+
+Gollery reads any file in the root directory (where the pictures are) called
+`.gollery.metadata`, and uses that to configure the access rules. The
+`.gollery.metadata` file in the root directory is a bit special, we call it the
+root metadata file.
+
+### Root metadata file
+That's where you configure the users and groups. It looks like:
+
+```
+{
+    "users": {
+        "token1": {
+            "name": "Token for myself"
+        },
+        "token2": {
+            "name": "Another token for which I can configure different rules"
+        }
+    },
+    "groups": {
+        "family": {
+            "members": ["token1"]
+        },
+        "trusted-people": {
+            "members": ["token1", "token2"]
+        }
+    }
+}
+```
+
+Its content should be self-explaining, you can define any number of tokens, and
+use groups to group them together. At the moment, you can't nest groups, but
+that might change at some point.
+
+You can refer at any point to the `RootMetadata` struct definition in
+`metadata.go` for an up to date reference.
+
+### Album metadata file
+That's the `.gollery.metadata` file that you can drop in any of your albums,
+that is in any subfolder of the root folder. It looks like:
+
+```
+{
+    "public": false,
+    "allowed": [
+        {"user": "token1"},
+        {"group": "trusted-people"}
+    ]
+}
+```
+
+If you set the album to be `public`, then no authentication will be needed to
+access it. That value is set to false by default, so that new albums don't get
+published by accident.
+
+For private albums, you can define a list of users or groups that will be
+granted access (the example above is redundant, since "token1" is already in
+the "trusted-people" group).
+
+You can refer at any point to the `AlbumMetadata` struct definition in
+`metadata.go` for an up to date reference.
+
 ## Common issues
 
 ### When installing the required go modules, it fails complaining about missing symbols
