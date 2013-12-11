@@ -3,17 +3,12 @@ package app
 import (
 	"github.com/robfig/revel"
 	"github.com/robfig/revel/modules/jobs/app/jobs"
+	"gollery/app/common"
 	"gollery/monitor"
 	"gollery/thumbnailer"
 	"runtime"
 )
 
-const (
-	GOLLERY_CONFIG_ROOT_DIR  = "gollery.root_dir"
-	GOLLERY_CONFIG_CACHE_DIR = "gollery.cache_dir"
-)
-
-var RootDir string
 var Monitor *monitor.Monitor
 var Thumbnailer *thumbnailer.Thumbnailer
 
@@ -43,16 +38,16 @@ func init() {
 func initServices() {
 	var found bool
 
-	RootDir, found = revel.Config.String(GOLLERY_CONFIG_ROOT_DIR)
+	common.RootDir, found = revel.Config.String(common.GOLLERY_CONFIG_ROOT_DIR)
 
 	if !found {
-		panic("Missing configuration parameter: " + GOLLERY_CONFIG_ROOT_DIR)
+		panic("Missing configuration parameter: " + common.GOLLERY_CONFIG_ROOT_DIR)
 	}
 
-	cachedir, found := revel.Config.String(GOLLERY_CONFIG_CACHE_DIR)
+	cachedir, found := revel.Config.String(common.GOLLERY_CONFIG_CACHE_DIR)
 
 	if !found {
-		panic("Missing configuration parameter: " + GOLLERY_CONFIG_CACHE_DIR)
+		panic("Missing configuration parameter: " + common.GOLLERY_CONFIG_CACHE_DIR)
 	}
 
 	var err error
@@ -63,9 +58,9 @@ func initServices() {
 		panic("Cannot initalize file monitoring: " + err.Error())
 	}
 
-	Monitor.Watch(RootDir)
+	Monitor.Watch(common.RootDir)
 
-	Thumbnailer, err = thumbnailer.NewThumbnailer(RootDir, cachedir, Monitor)
+	Thumbnailer, err = thumbnailer.NewThumbnailer(common.RootDir, cachedir, Monitor)
 
 	if err != nil {
 		panic("Cannot initialize thumbnailer service: " + err.Error())

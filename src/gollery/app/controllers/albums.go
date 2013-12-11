@@ -4,6 +4,7 @@ import (
 	"github.com/abustany/goexiv"
 	"github.com/robfig/revel"
 	"gollery/app"
+	"gollery/app/common"
 	"gollery/thumbnailer"
 	"gollery/utils"
 	"net/http"
@@ -66,11 +67,11 @@ func (c *Albums) Index() revel.Result {
 	dirs := make([]*AlbumInfo, 0, len(watchedPaths))
 
 	for _, dir := range watchedPaths {
-		if dir == app.RootDir || !strings.HasPrefix(dir, app.RootDir) {
+		if dir == common.RootDir || !strings.HasPrefix(dir, common.RootDir) {
 			continue
 		}
 
-		dir = dir[1+len(app.RootDir):]
+		dir = dir[1+len(common.RootDir):]
 		dirs = append(dirs, &AlbumInfo{
 			Name: dir,
 		})
@@ -118,7 +119,7 @@ func getMetadata(filePath string) (map[string]string, error) {
 func (c *Albums) Show(name string) revel.Result {
 	revel.INFO.Printf("Loading album %s", name)
 
-	dirPath := path.Join(app.RootDir, name)
+	dirPath := path.Join(common.RootDir, name)
 	dirFd, err := os.Open(dirPath)
 
 	if os.IsNotExist(err) {
