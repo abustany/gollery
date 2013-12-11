@@ -27,7 +27,7 @@ type AlbumData struct {
 }
 
 type PictureInfo struct {
-	Path string `json:"path"`
+	Path     string            `json:"path"`
 	Metadata map[string]string `json:"metadata"`
 }
 
@@ -167,7 +167,7 @@ func (c *Albums) Show(name string) revel.Result {
 		}
 
 		picInfo := &PictureInfo{
-			Path: info.Name(),
+			Path:     info.Name(),
 			Metadata: metadata,
 		}
 
