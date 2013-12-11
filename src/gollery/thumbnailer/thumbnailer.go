@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gographics/imagick/imagick"
 	"github.com/robfig/revel"
+	"gollery/app/common"
 	"gollery/monitor"
 	"gollery/utils"
 	"io"
@@ -276,22 +277,8 @@ func (t *Thumbnailer) ScheduleThumbnail(filePath string) {
 	t.queuedItems[filePath] = true
 }
 
-// For absolute paths, check that they are in the root dir
-// For relative paths, prepend the root dir path
-func (t *Thumbnailer) normalizePath(filePath string) (string, error) {
-	if len(filePath) > 0 && filePath[0] == '/' {
-		if !strings.HasPrefix(filePath, t.RootDir) {
-			return "", fmt.Errorf("Not creating a thumbnail for a file outside the root directory: %s", filePath)
-		}
-
-		return filePath, nil
-	}
-
-	return path.Join(t.RootDir, filePath), nil
-}
-
 func (t *Thumbnailer) CreateThumbnail(filePath string) error {
-	normalizedPath, err := t.normalizePath(filePath)
+	normalizedPath, err := common.NormalizePath(filePath)
 
 	if err != nil {
 		return utils.WrapError(err, "Invalid path '%s'", filePath)
@@ -364,7 +351,7 @@ func (t *Thumbnailer) CreateThumbnail(filePath string) error {
 }
 
 func (t *Thumbnailer) DeleteThumbnail(filePath string) error {
-	normalizedPath, err := t.normalizePath(filePath)
+	normalizedPath, err := common.NormalizePath(filePath)
 
 	if err != nil {
 		return utils.WrapError(err, "Invalid path '%s'", normalizedPath)
@@ -403,7 +390,7 @@ func (t *Thumbnailer) ThumbnailQueueSize() int {
 }
 
 func (t *Thumbnailer) HasThumbnail(filePath string, size ThumbnailSize) (bool, error) {
-	normalizedPath, err := t.normalizePath(filePath)
+	normalizedPath, err := common.NormalizePath(filePath)
 
 	if err != nil {
 		return false, utils.WrapError(err, "Cannot normalize path")
@@ -427,7 +414,7 @@ func (t *Thumbnailer) HasThumbnail(filePath string, size ThumbnailSize) (bool, e
 }
 
 func (t *Thumbnailer) GetThumbnail(filePath string, size ThumbnailSize) (*os.File, error) {
-	normalizedPath, err := t.normalizePath(filePath)
+	normalizedPath, err := common.NormalizePath(filePath)
 
 	if err != nil {
 		return nil, utils.WrapError(err, "Cannot normalize path")
