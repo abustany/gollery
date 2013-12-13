@@ -1,8 +1,8 @@
 #!/bin/sh
 
-if [ "$0" != "bash" ]; then
+if [ "$0" != "bash" -a "$0" != "-bash" ]; then
 	echo "Please source me in a Bash shell!"
-	exit 1
+	return
 fi
 
 MYDIR="$(dirname $(readlink -m $BASH_SOURCE))"
