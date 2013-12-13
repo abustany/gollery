@@ -2,6 +2,12 @@ define(['jquery'], function($) {
 
 var I18N = {
 	setLocale: function(locale) {
+		if (!locale) {
+			return;
+		}
+
+		locale = String(locale).split('-').shift();
+
 		// Messages are in english by default
 		if (locale === 'en') {
 			return;
