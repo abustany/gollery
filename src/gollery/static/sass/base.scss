@@ -24,7 +24,31 @@ div {
 	-webkit-overflow-scrolling: touch;
 }
 
-.frame {
+.album-frame {
+	float: left;
+	width: 220px;
+	height: 220px;
+	margin: 1%;
+	border: 1px solid black;
+	padding: 0;
+	background-color: white;
+	text-align: center;
+}
+
+.album-frame-inner {
+	width: inherit;
+	height: inherit;
+	vertical-align: middle;
+	display: table-cell;
+	clear: right;
+}
+
+.album-frame-title {
+	display: block;
+	margin-top: .5em;
+}
+
+.picture-frame {
 	float: left;
 	width: 220px;
 	height: 220px;
@@ -34,7 +58,7 @@ div {
 	background-color: white;
 }
 
-.frame-inner {
+.picture-frame-inner {
 	width: inherit;
 	height: inherit;
 	text-align: center;
@@ -52,7 +76,33 @@ div {
 	@include single-transition("transform", .5s);
 }
 
+.ui-mode-album-list {
+	#pane-album-list {
+		@include translateX(0px);
+	}
+
+	#pane-browser {
+		@include translateX(100%);
+	}
+
+	#pane-viewer {
+		@include translateX(100%);
+	}
+
+	#top-bar-album-list {
+		@include translateX(0px);
+	}
+
+	#top-bar-browser {
+		@include translateX(100%);
+	}
+}
+
 .ui-mode-browser {
+	#pane-album-list {
+		@include translateX(-100%);
+	}
+
 	#pane-browser {
 		@include translateX(0px);
 	}
@@ -60,15 +110,35 @@ div {
 	#pane-viewer {
 		@include translateX(100%);
 	}
+
+	#top-bar-album-list {
+		@include translateX(-100%);
+	}
+
+	#top-bar-browser {
+		@include translateX(0);
+	}
 }
 
 .ui-mode-viewer {
+	#pane-album-list {
+		@include translateX(-100%);
+	}
+
 	#pane-browser {
 		@include translateX(-100%);
 	}
 
 	#pane-viewer {
 		@include translateX(0px);
+	}
+
+	#top-bar-album-list {
+		@include translateX(-100%);
+	}
+
+	#top-bar-browser {
+		@include translateX(-100%);
 	}
 }
 

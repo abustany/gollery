@@ -1,9 +1,13 @@
-define(['jquery', 'leaflet'], function($, Leaflet) {
+define(['jquery', 'leaflet', 'pictureframe'], function($, Leaflet, PictureFrame) {
 
 function Browser(app) {
 	var browser = this;
 
 	browser.app = app;
+
+	$('#top-bar-browser-back-button').click(function() {
+		document.location.hash = '#';
+	});
 
 	Leaflet.Icon.Default.imagePath = '/images';
 
@@ -157,19 +161,10 @@ Browser.prototype = {
 	},
 
 	addPicture: function(pic) {
-		var frame = document.createElement('div');
-		frame.className = 'frame';
+		var href = '#view:' + this.album.name + '/' + pic.path;
+		var frame = new PictureFrame(this.album.name, pic, href);
 
-		var a = document.createElement('a');
-		a.className = 'frame-inner';
-		a.href = '#view:' + this.album.name + '/' + pic.path;
-		frame.appendChild(a);
-
-		var img = document.createElement('img');
-		img.src = document.location.origin + '/thumbnails/small/' + this.album.name + '/' + pic.path;
-		a.appendChild(img);
-
-		$('#picture-list').append(frame);
+		$('#picture-list').append(frame.el);
 	},
 
 	toggleMap: function() {

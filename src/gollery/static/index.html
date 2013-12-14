@@ -11,7 +11,13 @@
 		<meta name="viewport" content="width=device-width, init-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="edge" />
 	</head>
-	<body class="ui-mode-browser">
+	<body class="ui-mode-album-list">
+		<div class="ui-pane" id="pane-album-list">
+			<div id="album-list-container">
+				<ul id="album-list">
+				</ul>
+			</div>
+		</div>
 		<div class="ui-pane" id="pane-browser">
 			<div id="browser-content">
 				<div id="browser-content-flipper" class="widget-flipper">
@@ -31,16 +37,6 @@
 					<input type="button" id="browser-map-button" data-i18n value="Map view"/>
 				</div>
 			</div>
-
-			<div id="sidebar">
-				<div id="sidebar-toggle-box">
-					<input type="button" id="sidebar-toggle-button" value="&lt;" />
-				</div>
-				<div id="album-list-container">
-					<ul id="album-list">
-					</ul>
-				</div>
-			</div>
 		</div>
 
 		<div class="ui-pane" id="pane-viewer">
@@ -54,6 +50,19 @@
 						<input type="button" id="viewer-prev-button" value="&lt;"/>
 						<input type="button" id="viewer-next-button" value="&gt;"/>
 					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="top-bar">
+			<div id="top-bar-album-list">
+				<div>
+					Welcome to Gollery
+				</div>
+			</div>
+			<div id="top-bar-browser">
+				<div>
+					<input type="button" id="top-bar-browser-back-button" value="Album list"/>
 				</div>
 			</div>
 		</div>

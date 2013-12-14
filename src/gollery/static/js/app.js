@@ -1,4 +1,4 @@
-define(['browser', 'flipper', 'i18n', 'jquery', 'sidebar', 'viewer'], function(Browser, Flipper, I18N, $, Sidebar, Viewer) {
+define(['albumlist', 'browser', 'flipper', 'i18n', 'jquery', 'viewer'], function(AlbumList, Browser, Flipper, I18N, $, Viewer) {
 
 var _ = I18N.G;
 
@@ -8,12 +8,14 @@ var App = {
 
 		console.log('Starting application');
 
-		app.sidebar = new Sidebar();
+		app.albumList = new AlbumList();
 		app.browser = new Browser(app);
 		app.listMapFlipper = new Flipper('#browser-content-flipper');
 		app.viewer = new Viewer(app);
 
-		app.setUiMode('browser');
+		app.loadAlbums();
+
+		app.setUiMode('album-list');
 
 		I18N.setLocale(window.navigator.language);
 
@@ -64,7 +66,7 @@ var App = {
 		var hash = document.location.hash;
 
 		if (hash === '') {
-			this.browseAlbum(null);
+			this.setUiMode('album-list');
 			return;
 		}
 
@@ -113,6 +115,20 @@ var App = {
 
 			f.call(this, actionParam, actionOptions);
 		}
+	},
+
+	loadAlbums: function() {
+		var app = this;
+		var albumList = $('#album-list');
+
+		$.getJSON('/albums/', function(data) {
+			data.sort(app.albumCompareFunc);
+			app.albumList.update(data);
+		});
+	},
+
+	albumCompareFunc: function(a, b) {
+		return a.name.localeCompare(b.name);
 	},
 
 	sortPicturesByDate: function(pictures) {
@@ -276,6 +292,8 @@ var App = {
 		app.setUiMode('browser');
 
 		$content_flipper.toggleClass('browser-no-album', !album);
+
+		app.browser.browse(null);
 
 		if (album) {
 			app.loadAlbum(album, function(data) {

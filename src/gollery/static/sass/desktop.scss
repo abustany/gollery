@@ -1,39 +1,66 @@
 @import "compass/css3";
 @import "mixins";
 
-$sidebar_size_normal: 200px;
-$sidebar_peek_normal: 40px;
-$sidebar_size_hidpi: 600px;
-$sidebar_peek_hidpi: 80px;
+$top-bar-size: 2em;
 
-#sidebar {
-	background-color: #AAAAAA;
-	width: $sidebar_size_normal;
-	height: 100%;
+#top-bar {
 	position: fixed;
 	left: 0px;
 	top: 0px;
-	@include single-transition("transform", 1s);
+	width: 100%;
+	height: $top-bar-size;
+	background-color: black;
+	@include single-transition("transform", .5s);
+}
 
-	@include respond-to('hidpi') {
-		width: $sidebar_size_hidpi;
+#top-bar > div {
+	@include single-transition("transform", .5s);
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+}
+
+.ui-mode-viewer {
+	#top-bar {
+		@include translateY(-$top-bar-size);
 	}
+}
+
+#top-bar-album-list {
+	text-align: center;
+	font-size: 1em;
+	color: white;
+	display: table;
+}
+
+#top-bar-album-list > div {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+}
+
+#top-bar-browser {
+	display: table;
+}
+
+#top-bar-browser > div {
+	display: table-cell;
+	vertical-align: middle;
+	padding-left: 1em;
+}
+
+#top-bar-browser input {
 }
 
 #browser-content {
 	position: fixed;
-	top: 0px;
+	top: $top-bar-size;
 	right: 0px;
 	bottom: 0px;
-	overflow: hidden;
-
-	left: $sidebar_size_normal;
-
-	@include respond-to('hidpi') {
-		left: $sidebar_size_hidpi;
-	}
-
-	@include single-transition("left", 1s);
+	left: 0px;
+	overflow: visible;
 }
 
 #browser-content-flipper {
@@ -41,44 +68,11 @@ $sidebar_peek_hidpi: 80px;
 	height: 100%;
 }
 
-#sidebar-toggle-box {
-	position: absolute;
-	top: 0;
-	right: 0;
-	text-align: right;
-	@include translateZ(1px);
-}
-
-#sidebar-toggle-button {
-	@include single-transition("transform", 1s);
-}
-
 #album-list-container {
+	margin-top: $top-bar-size;
 	width: 100%;
 	height: 100%;
 	overflow: auto;
-}
-
-.sidebar-toggled {
-	#sidebar {
-		@include translateX(-$sidebar_size_normal + $sidebar_peek_normal);
-
-		@include respond-to('hidpi') {
-			@include translateX(-$sidebar_size_hidpi + $sidebar_peek_hidpi);
-		}
-	}
-
-	#browser-content {
-		left: $sidebar_peek_normal;
-
-		@include respond-to('hidpi') {
-			left: $sidebar_peek_hidpi;
-		}
-	}
-
-	#sidebar-toggle-button {
-		@include rotateZ(180deg);
-	}
 }
 
 #browser-toolbar {
