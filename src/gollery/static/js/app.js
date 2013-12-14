@@ -1,4 +1,4 @@
-define(['browser', 'i18n', 'jquery', 'sidebar', 'viewer'], function(Browser, I18N, $, Sidebar, Viewer) {
+define(['browser', 'flipper', 'i18n', 'jquery', 'sidebar', 'viewer'], function(Browser, Flipper, I18N, $, Sidebar, Viewer) {
 
 var _ = I18N.G;
 
@@ -10,6 +10,7 @@ var App = {
 
 		app.sidebar = new Sidebar();
 		app.browser = new Browser(app);
+		app.listMapFlipper = new Flipper('#content-flipper');
 		app.viewer = new Viewer(app);
 
 		app.setUiMode('main');
@@ -270,11 +271,11 @@ var App = {
 
 	browseAlbum: function(album, options) {
 		var app = this;
-		var $content = $('#content');
+		var $content_flipper = $('#content-flipper');
 
 		app.setUiMode('main');
 
-		$content.toggleClass('browser-no-album', !album);
+		$content_flipper.toggleClass('browser-no-album', !album);
 
 		if (album) {
 			app.loadAlbum(album, function(data) {
@@ -284,10 +285,10 @@ var App = {
 			var $toggleViewButton = $('#browser-map-button');
 
 			if (options.map) {
-				$content.addClass('browser-map-view');
+				app.listMapFlipper.flip(true);
 				$toggleViewButton.attr('value', _('List view'));
 			} else {
-				$content.removeClass('browser-map-view');
+				app.listMapFlipper.flip(false);
 				$toggleViewButton.attr('value', _('Map view'));
 			}
 		} else {

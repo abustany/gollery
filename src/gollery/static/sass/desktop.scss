@@ -36,6 +36,11 @@ $sidebar_peek_hidpi: 80px;
 	@include single-transition("left", 1s);
 }
 
+#content-flipper {
+	width: 100%;
+	height: 100%;
+}
+
 #sidebar-toggle-box {
 	position: absolute;
 	top: 0;
@@ -91,30 +96,6 @@ $sidebar_peek_hidpi: 80px;
 	bottom: 0px;
 	margin-left: inherit;
 	overflow: hidden;
-}
-
-$browser_pane_rotate_duration: 0.2s;
-
-#picture-list-pane {
-	@include rotateX(0deg);
-	@include single-transition("transform", $browser_pane_rotate_duration, ease, $browser_pane_rotate_duration);
-}
-
-#map-view-pane {
-	@include rotateX(90deg);
-	@include single-transition("transform", 0.2s, ease, 0.0s);
-}
-
-.browser-map-view {
-	#picture-list-pane {
-		@include rotateX(-90deg);
-		@include single-transition("transform", 0.2s, ease, 0.0s);
-	}
-
-	#map-view-pane {
-		@include rotateX(0deg);
-		@include single-transition("transform", 0.2s, ease, 0.2s);
-	}
 }
 
 #picture-list {
