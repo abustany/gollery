@@ -7,6 +7,7 @@ import (
 	"gollery/app/common"
 	"gollery/thumbnailer"
 	"gollery/utils"
+	"math/rand"
 	"net/http"
 	"os"
 	"path"
@@ -18,7 +19,8 @@ type Albums struct {
 }
 
 type AlbumInfo struct {
-	Name string `json:"name"`
+	Name  string `json:"name"`
+	Cover string `json:"cover"`
 }
 
 type AlbumData struct {
@@ -72,14 +74,49 @@ func (c *Albums) Index() revel.Result {
 		}
 
 		dir = dir[1+len(common.RootDir):]
+
+		cover, err := c.getAlbumCover(dir)
+
+		if err != nil {
+			revel.ERROR.Printf("Cannot lookup cover for album '%s': %s", dir, err)
+		}
+
 		dirs = append(dirs, &AlbumInfo{
-			Name: dir,
+			Name:  dir,
+			Cover: cover,
 		})
 	}
 
 	c.Response.Status = http.StatusOK
 	c.Response.ContentType = "application/json"
 	return c.RenderJson(dirs)
+}
+
+func (c *Albums) getAlbumCover(name string) (string, error) {
+	fis, err := c.listPictures(name)
+
+	if err != nil {
+		return "", utils.WrapError(err, "Cannot list album '%s'", name)
+	}
+
+	for i := 0; i < 10; i++ {
+		fi := fis[rand.Int31n(int32(len(fis)))]
+		filePath := path.Join(name, fi.Name())
+
+		hasThumbnail, err := app.Thumbnailer.HasThumbnail(filePath, thumbnailer.THUMB_SMALL)
+
+		if err != nil {
+			return "", utils.WrapError(err, "Cannot check if thumbnail exists for '%s'", filePath)
+		}
+
+		if !hasThumbnail {
+			continue
+		}
+
+		return filePath, nil
+	}
+
+	return "", nil
 }
 
 func getMetadata(filePath string) (map[string]string, error) {
@@ -116,24 +153,33 @@ func getMetadata(filePath string) (map[string]string, error) {
 	return metadata, nil
 }
 
-func (c *Albums) Show(name string) revel.Result {
-	revel.INFO.Printf("Loading album %s", name)
-
+func (c *Albums) listPictures(name string) ([]os.FileInfo, error) {
 	dirPath := path.Join(common.RootDir, name)
 	dirFd, err := os.Open(dirPath)
 
 	if os.IsNotExist(err) {
-		c.Response.Status = http.StatusNotFound
-		c.Response.ContentType = "application/json"
-		return c.RenderJson(struct{}{})
+		return nil, nil
 	}
 
 	if err != nil {
-		c.Response.Status = http.StatusInternalServerError
-		return c.RenderError(utils.WrapError(err, "Cannot open album"))
+		return nil, utils.WrapError(err, "Cannot open folder")
 	}
 
+	defer dirFd.Close()
+
 	fis, err := dirFd.Readdir(-1)
+
+	if err != nil {
+		return nil, utils.WrapError(err, "Cannot list folder")
+	}
+
+	return fis, nil
+}
+
+func (c *Albums) Show(name string) revel.Result {
+	revel.INFO.Printf("Loading album %s", name)
+
+	fis, err := c.listPictures(name)
 
 	if err != nil {
 		c.Response.Status = http.StatusInternalServerError
@@ -144,6 +190,8 @@ func (c *Albums) Show(name string) revel.Result {
 		Name:     name,
 		Pictures: make([]*PictureInfo, 0, len(fis)),
 	}
+
+	dirPath := path.Join(common.RootDir, name)
 
 	for _, info := range fis {
 		filePath := path.Join(dirPath, info.Name())
