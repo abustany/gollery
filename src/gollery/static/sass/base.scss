@@ -52,8 +52,8 @@ div {
 	@include single-transition("transform", .5s);
 }
 
-.ui-mode-main {
-	#pane-main {
+.ui-mode-browser {
+	#pane-browser {
 		@include translateX(0px);
 	}
 
@@ -63,7 +63,7 @@ div {
 }
 
 .ui-mode-viewer {
-	#pane-main {
+	#pane-browser {
 		@include translateX(-100%);
 	}
 

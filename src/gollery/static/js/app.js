@@ -10,10 +10,10 @@ var App = {
 
 		app.sidebar = new Sidebar();
 		app.browser = new Browser(app);
-		app.listMapFlipper = new Flipper('#content-flipper');
+		app.listMapFlipper = new Flipper('#browser-content-flipper');
 		app.viewer = new Viewer(app);
 
-		app.setUiMode('main');
+		app.setUiMode('browser');
 
 		I18N.setLocale(window.navigator.language);
 
@@ -271,9 +271,9 @@ var App = {
 
 	browseAlbum: function(album, options) {
 		var app = this;
-		var $content_flipper = $('#content-flipper');
+		var $content_flipper = $('#browser-content-flipper');
 
-		app.setUiMode('main');
+		app.setUiMode('browser');
 
 		$content_flipper.toggleClass('browser-no-album', !album);
 
