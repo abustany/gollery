@@ -281,7 +281,11 @@ var App = {
 	loadAlbum: function(name, cb) {
 		var app = this;
 
-		if (this.album && this.album.name === name) {
+		// FIXME: The decoding of the hash token seems to behave differently
+		// in Chrome and Firefox (Firefox does the decoding already). As
+		// long as we don't have any % in the album name, doing an extra
+		// decode is harmless.
+		if (this.album && this.album.name === decodeURIComponent(name)) {
 			cb(this.album);
 			return;
 		}
