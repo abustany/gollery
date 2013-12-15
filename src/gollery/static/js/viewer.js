@@ -61,17 +61,17 @@ function Viewer(app) {
 Viewer.prototype = {
 	goBackToAlbums: function() {
 		if (!this.album) {
-			document.location.hash = '';
+			this.app.navigate('');
 			return;
 		}
 
 		if (this.previousRoute) {
-			document.location.hash = this.app.buildHash(this.previousRoute);
+			this.app.navigate(this.app.buildHash(this.previousRoute));
 			this.previousRoute = null;
 			return;
 		}
 
-		document.location.hash = '#browse:' + this.album.name;
+		this.app.navigate('#browse:' + this.album.name);
 
 		this.album = null;
 		this.filename = null;
@@ -121,7 +121,7 @@ Viewer.prototype = {
 			idx += pics.length;
 		}
 
-		document.location.hash = 'view:' + encodeURIComponent(this.album.name) + '/' + pics[idx].path;
+		this.app.navigate('view:' + encodeURIComponent(this.album.name) + '/' + pics[idx].path);
 	},
 
 	supportsFullscreen: function() {

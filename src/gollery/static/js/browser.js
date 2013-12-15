@@ -6,7 +6,7 @@ function Browser(app) {
 	browser.app = app;
 
 	$('#top-bar-browser-back-button').click(function() {
-		document.location.hash = '#';
+		browser.app.navigate('');
 	});
 
 	Leaflet.Icon.Default.imagePath = '/images';
@@ -180,7 +180,7 @@ Browser.prototype = {
 
 		var newHash = 'browse' + mapParam + ':' + app.route.param;
 
-		document.location.hash = newHash;
+		app.navigate(newHash);
 	}
 };
 

@@ -65,6 +65,11 @@ var App = {
 	dispatchHash: function() {
 		var hash = document.location.hash;
 
+		if (this.navigateSilent) {
+			this.navigateSilent = false;
+			return;
+		}
+
 		if (hash === '') {
 			this.setUiMode('album-list');
 			return;
@@ -115,6 +120,12 @@ var App = {
 
 			f.call(this, actionParam, actionOptions);
 		}
+	},
+
+	navigate: function(route, silent) {
+		this.navigateSilent = !!silent;
+
+		document.location.hash = route;
 	},
 
 	loadAlbums: function() {
