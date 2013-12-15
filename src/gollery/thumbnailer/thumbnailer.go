@@ -1,9 +1,14 @@
 package thumbnailer
 
+// #cgo pkg-config: MagickWand
+// #include <stdlib.h>
+// #include "helper.h"
+import "C"
+
 import (
 	"crypto/sha1"
+	"errors"
 	"fmt"
-	"github.com/gographics/imagick/imagick"
 	"github.com/robfig/revel"
 	"gollery/app/common"
 	"gollery/monitor"
@@ -15,6 +20,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"unsafe"
 )
 
 const (
@@ -41,7 +47,7 @@ type Thumbnailer struct {
 }
 
 func init() {
-	imagick.Initialize()
+	C.gollery_thumbnailer_init()
 }
 
 func makeCacheKey(path string, size ThumbnailSize) string {
@@ -163,6 +169,9 @@ func (t *Thumbnailer) monitorEventsRoutine() {
 }
 
 func (t *Thumbnailer) thumbnailQueueRoutine() {
+	thumbnailer := C.gollery_thumbnailer_new()
+	defer C.gollery_thumbnailer_free(thumbnailer)
+
 	for filePath := range t.thumbnailingQueue {
 		t.queuedItemsMutex.Lock()
 		delete(t.queuedItems, filePath)
@@ -173,7 +182,7 @@ func (t *Thumbnailer) thumbnailQueueRoutine() {
 			continue
 		}
 
-		err := t.CreateThumbnail(filePath)
+		err := t.createThumbnail(thumbnailer, filePath)
 
 		if err != nil {
 			revel.ERROR.Printf("Couldn't create thumbnail for file '%s': %s", filePath, err)
@@ -277,7 +286,26 @@ func (t *Thumbnailer) ScheduleThumbnail(filePath string) {
 	t.queuedItems[filePath] = true
 }
 
-func (t *Thumbnailer) CreateThumbnail(filePath string) error {
+func (t *Thumbnailer) resizeImage(thumbnailer *C.GolleryThumbnailer, src string, dst string, size int) error {
+	cSrc := C.CString(src)
+	defer C.free(unsafe.Pointer(cSrc))
+
+	cDst := C.CString(dst)
+	defer C.free(unsafe.Pointer(cDst))
+
+	var cError *C.char = nil
+	defer C.free(unsafe.Pointer(cError))
+
+	ret := C.gollery_thumbnailer_resize(thumbnailer, cSrc, cDst, C.size_t(size), &cError)
+
+	if int(ret) != 1 {
+		return errors.New(C.GoString(cError))
+	}
+
+	return nil
+}
+
+func (t *Thumbnailer) createThumbnail(thumbnailer *C.GolleryThumbnailer, filePath string) error {
 	normalizedPath, err := common.NormalizePath(filePath)
 
 	if err != nil {
@@ -289,56 +317,12 @@ func (t *Thumbnailer) CreateThumbnail(filePath string) error {
 	startTime := time.Now()
 
 	forAllThumbSizes(func(size ThumbnailSize) bool {
-		mw := imagick.NewMagickWand()
-		defer mw.Destroy()
-
-		err = mw.ReadImage(normalizedPath)
-
-		if err != nil {
-			err = utils.WrapError(err, "Cannot read file '%s'", normalizedPath)
-			return false
-		}
-
 		thumbKey := makeCacheKey(fileId, size)
 		thumbPath := path.Join(t.CacheDir, thumbKey)
 
-		width := mw.GetImageWidth()
-		height := mw.GetImageHeight()
-		var scale float32
+		err = t.resizeImage(thumbnailer, normalizedPath, thumbPath, int(size))
 
-		if width > height {
-			scale = float32(size) / float32(width)
-			width = uint(size)
-			height = uint(float32(height) * scale)
-		} else {
-			scale = float32(size) / float32(height)
-			height = uint(size)
-			width = uint(float32(width) * scale)
-		}
-
-		// TRIANGLE is a simple linear interpolation, should be fast enough
-		err = mw.ResizeImage(width, height, imagick.FILTER_TRIANGLE, 1)
-
-		if err != nil {
-			err = utils.WrapError(err, "Cannot generate thumbnail for file '%s'", normalizedPath)
-			return false
-		}
-
-		err = mw.SetCompressionQuality(THUMBNAILER_COMPRESSION_QUALITY)
-
-		if err != nil {
-			err = utils.WrapError(err, "Cannot set compression quality for file '%s'", normalizedPath)
-			return false
-		}
-
-		err = mw.WriteImage(thumbPath)
-
-		if err != nil {
-			err = utils.WrapError(err, "Cannot write thumbnail '%s' for file '%s'", thumbPath, normalizedPath)
-			return false
-		}
-
-		return true
+		return (err == nil)
 	})
 
 	if err != nil {
