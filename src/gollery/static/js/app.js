@@ -317,6 +317,8 @@ var App = {
 	viewPicture: function(path) {
 		var app = this;
 
+		var wasInViewerMode = (this.getUiMode() === 'viewer');
+
 		this.setUiMode('viewer');
 
 		var idx = path.lastIndexOf('/');
@@ -325,6 +327,15 @@ var App = {
 
 		app.loadAlbum(album, function(data) {
 			app.viewer.view(data, filename);
+
+			if (!wasInViewerMode) {
+				$('#viewer-toolbar-inner').removeClass('viewer-toolbar-autohide');
+
+				setTimeout(function() {
+					$('#viewer-toolbar-inner').toggleClass('viewer-toolbar-autohide', true);
+					app.hideViewerToolbarTimeout = undefined;
+				}, 1000);
+			}
 		});
 	},
 

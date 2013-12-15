@@ -166,7 +166,6 @@ div {
 }
 
 #viewer-toolbar {
-	background-color: rgba(0, 0, 0, .7);
 	position: absolute;
 	bottom: 0px;
 	left: 0px;
@@ -175,7 +174,21 @@ div {
 	display: table;
 }
 
+#viewer-toolbar > div.viewer-toolbar-autohide {
+	@include translateY(2em);
+	@include single-transition("transform", .5s, ease, 1s);
+}
+
+#viewer-toolbar:hover > div {
+	@include translateY(0px);
+	@include single-transition("transform", .5s, ease, 0s);
+}
+.viewer-toolbar-force-show {
+	@include translateY(0px);
+}
+
 #viewer-toolbar-inner {
+	background-color: rgba(0, 0, 0, .7);
 	display: table-cell;
 	vertical-align: middle;
 	text-align: center;
