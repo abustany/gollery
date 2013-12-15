@@ -46,12 +46,19 @@ $top-bar-size: 2em;
 }
 
 #top-bar-browser > div {
+	position: relative;
 	display: table-cell;
 	vertical-align: middle;
+	text-align: center;
 	padding-left: 1em;
+	color: white;
 }
 
-#top-bar-browser input {
+#top-bar-browser-back-button {
+	position: absolute;
+	left: 1em;
+	top: 10%;
+	bottom: 10%;
 }
 
 #browser-content {

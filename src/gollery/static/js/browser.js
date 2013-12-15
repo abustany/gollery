@@ -42,6 +42,8 @@ Browser.prototype = {
 
 		$('#picture-list').html('');
 
+		$('#top-bar-browser-album-title').text(album ? album.name : '');
+
 		if (!browser.album) {
 			return;
 		}
