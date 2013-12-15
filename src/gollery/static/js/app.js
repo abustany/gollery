@@ -308,7 +308,9 @@ var App = {
 
 		$content_flipper.toggleClass('browser-no-album', !album);
 
-		app.browser.browse(null);
+		if (album && app.browser.album && app.browser.album.name !== album) {
+			app.browser.browse(null);
+		}
 
 		if (album) {
 			app.loadAlbum(album, function(data) {
