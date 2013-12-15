@@ -47,6 +47,15 @@ function Viewer(app) {
 	});
 
 	Common.dontScroll('#viewer');
+
+	if (viewer.supportsFullscreen()) {
+		$fullscreen_button = $('#viewer-fullscreen-button');
+		$fullscreen_button.css('display', 'inline-block');
+
+		$fullscreen_button.click(function() {
+			viewer.goFullscreen();
+		});
+	}
 }
 
 Viewer.prototype = {
@@ -113,6 +122,23 @@ Viewer.prototype = {
 		}
 
 		document.location.hash = 'view:' + encodeURIComponent(this.album.name) + '/' + pics[idx].path;
+	},
+
+	supportsFullscreen: function() {
+		return document.documentElement.requestFullscreen ||
+			document.documentElement.mozRequestFullScreen ||
+			document.documentElement.webkitRequestFullscreen;
+	},
+
+	goFullscreen: function() {
+		// Stolen from https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Using_full_screen_mode
+		if (document.documentElement.requestFullscreen) {
+			document.documentElement.requestFullscreen();
+		} else if (document.documentElement.mozRequestFullScreen) {
+			document.documentElement.mozRequestFullScreen();
+		} else if (document.documentElement.webkitRequestFullscreen) {
+			document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+		}
 	}
 };
 

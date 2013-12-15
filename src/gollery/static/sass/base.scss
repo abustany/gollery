@@ -203,3 +203,9 @@ div {
 #viewer-quit-button {
 	float: left;
 }
+
+#viewer-fullscreen-button {
+	/* Hidden by default as not all browsers support it */
+	display: none;
+	float: right;
+}
