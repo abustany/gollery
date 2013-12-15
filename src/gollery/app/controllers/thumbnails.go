@@ -1,11 +1,13 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/robfig/revel"
 	"gollery/app"
 	"gollery/thumbnailer"
 	"gollery/utils"
 	"net/http"
+	"time"
 )
 
 type Thumbnails struct {
@@ -39,6 +41,13 @@ func (t *Thumbnails) Thumbnail(size string, name string) revel.Result {
 		t.Response.ContentType = "text/plain"
 		return t.RenderText("Not found")
 	}
+
+	expireDuration := 5 * time.Minute
+	cacheControl := fmt.Sprintf("max-age=%d", int(expireDuration.Seconds()))
+	expires := time.Now().Add(expireDuration).Format(time.RFC1123)
+
+	t.Response.Out.Header().Add("Cache-Control", cacheControl)
+	t.Response.Out.Header().Add("Expires", expires)
 
 	return t.RenderFile(fd, revel.Inline)
 }
