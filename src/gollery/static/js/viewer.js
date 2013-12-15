@@ -56,6 +56,10 @@ function Viewer(app) {
 			viewer.goFullscreen();
 		});
 	}
+
+	$('#viewer-img').load(function() {
+		viewer.loadSiblings();
+	});
 }
 
 Viewer.prototype = {
@@ -85,13 +89,64 @@ Viewer.prototype = {
 			this.previousRoute = this.app.previousRoute;
 		}
 
-		var imgUrl = document.location.origin + '/thumbnails/large/' + album.name + '/' + filename;
-
 		$('#viewer-img').attr('src', '');
-		$('#viewer-img').attr('src', imgUrl);
+		$('#viewer-img').attr('src', this.pictureUrl(filename));
+	},
+
+	pictureUrl: function(path) {
+		return document.location.origin + '/thumbnails/large/' + this.album.name + '/' + path;
+	},
+
+	// Clamps an index to the album size
+	pictureIndex: function(idx) {
+		var pics = this.album.pictures;
+
+		if (idx >= pics.length) {
+			idx -= pics.length;
+		}
+
+		if (idx < 0) {
+			idx += pics.length;
+		}
+
+		return idx;
+	},
+
+	loadSiblings: function() {
+		var pics = this.album.pictures;
+		var filename = this.filename;
+
+		var idx = -1;
+
+		for (i = 0; i < pics.length; ++i) {
+			if (pics[i].path === filename) {
+				idx = i;
+				break;
+			}
+		}
+
+		if (idx === -1) {
+			console.log('Cannot find ' + filename + ' in pictures of album ' + album.name);
+			return;
+		}
+
+		var prevIdx = this.pictureIndex(idx - 1);
+		var nextIdx = this.pictureIndex(idx + 1);
+
+		this.prevImg = new Image();
+		this.nextImg = new Image();
+
+		var prevUrl = this.pictureUrl(pics[prevIdx].path);
+		var nextUrl = this.pictureUrl(pics[nextIdx].path);
+
+		this.prevImg.src = this.pictureUrl(pics[prevIdx].path);
+		this.nextImg.src = this.pictureUrl(pics[nextIdx].path);
 	},
 
 	viewSibling: function(direction) {
+		// We can't use this.prevImg or nextImg here, since this function might
+		// get invoked before they are defined (we only do preloading *after*
+		// the main image is loaded)
 		direction = (direction > 0 ? 1 : -1);
 
 		var pics = this.album.pictures;
@@ -111,15 +166,7 @@ Viewer.prototype = {
 			return;
 		}
 
-		idx += direction;
-
-		if (idx >= pics.length) {
-			idx -= pics.length;
-		}
-
-		if (idx < 0) {
-			idx += pics.length;
-		}
+		idx = this.pictureIndex(idx + direction);
 
 		this.app.navigate('view:' + encodeURIComponent(this.album.name) + '/' + pics[idx].path);
 	},
