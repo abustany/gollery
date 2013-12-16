@@ -12,6 +12,10 @@ import (
 var Monitor *monitor.Monitor
 var Thumbnailer *thumbnailer.Thumbnailer
 
+// auto defined by the revel builder
+var REVEL_APP_VERSION string
+var Version string
+
 func init() {
 	// Filters is the default set of global filters.
 	revel.Filters = []revel.Filter{
@@ -26,6 +30,8 @@ func init() {
 		revel.InterceptorFilter,       // Run interceptors around the action.
 		revel.ActionInvoker,           // Invoke the action.
 	}
+
+	Version = REVEL_APP_VERSION
 
 	revel.OnAppStart(func() {
 		initServices()
