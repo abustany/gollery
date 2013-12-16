@@ -14,6 +14,8 @@ GET     /albums/*name                           Albums.Show()
 
 GET     /thumbnails/:size/*name                 Thumbnails.Thumbnail()
 
+GET     /status                                 Status.Status()
+
 GET     /*filepath                              Static.Serve("static")
 GET     /                                       Static.Serve("static","index.html")
 
