@@ -1,4 +1,4 @@
-define(['albumlist', 'browser', 'flipper', 'i18n', 'jquery', 'viewer'], function(AlbumList, Browser, Flipper, I18N, $, Viewer) {
+define(['albumlist', 'browser', 'flipper', 'i18n', 'infowindow', 'jquery', 'viewer'], function(AlbumList, Browser, Flipper, I18N, InfoWindow, $, Viewer) {
 
 var _ = I18N.G;
 
@@ -10,6 +10,7 @@ var App = {
 
 		app.albumList = new AlbumList();
 		app.browser = new Browser(app);
+		app.infoWindow = new InfoWindow();
 		app.listMapFlipper = new Flipper('#browser-content-flipper');
 		app.viewer = new Viewer(app);
 

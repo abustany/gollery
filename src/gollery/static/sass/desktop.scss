@@ -29,6 +29,7 @@ $top-bar-size: 2em;
 }
 
 #top-bar-album-list {
+	position: relative;
 	text-align: center;
 	font-size: 1em;
 	color: white;
@@ -39,6 +40,12 @@ $top-bar-size: 2em;
 	display: table-cell;
 	vertical-align: middle;
 	text-align: center;
+}
+
+#top-bar-album-list-info {
+	position: absolute;
+	top: 10%;
+	right: 1em;
 }
 
 #top-bar-browser {

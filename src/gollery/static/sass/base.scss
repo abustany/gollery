@@ -209,3 +209,51 @@ div {
 	display: none;
 	float: right;
 }
+
+#info-window {
+	position: absolute;
+	top: 15%;
+	right: 15%;
+	bottom: 15%;
+	left: 15%;
+
+	background-color: white;
+	box-shadow: 5px 5px 20px;
+
+	@include translateY(-150%);
+	@include single-transition("transform", .5s);
+
+	padding: 1em;
+	overflow: auto;
+}
+
+#info-window.show-info {
+	@include translateY(0px);
+}
+
+#info-window h2 {
+	font-size: x-large;
+	text-align: center;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+#info-window h3 {
+	font-size: large;
+	font-weight: bold;
+}
+
+#info-window table {
+	margin-top: .5em;
+}
+
+#info-window td {
+	padding-bottom: .5em;
+	padding-right: 1em;
+}
+
+#info-window-close {
+	position: absolute;
+	top: 1em;
+	right: 1em;
+}

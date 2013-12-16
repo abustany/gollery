@@ -60,6 +60,7 @@
 				<div>
 					Welcome to Gollery
 				</div>
+				<input type="button" id="top-bar-album-list-info" value="Info"/>
 			</div>
 			<div id="top-bar-browser">
 				<div>
@@ -67,6 +68,41 @@
 				</div>
 				<input type="button" id="top-bar-browser-back-button" value="Album list"/>
 			</div>
+		</div>
+
+		<div id="info-window">
+			<h2>
+				Howdy! You're using Gollery version <span id="info-window-version"></span>.
+			</h2>
+
+			<h3>
+				System information
+			</h3>
+
+			<table id="info-window-stats">
+				<tr>
+					<td>Number of thumbnails in the queue</td>
+					<td id="info-window-thumbnailing-queue-size"></td>
+				</tr>
+				<tr>
+					<td>Go version</td>
+					<td id="info-window-go-version"></td>
+				</tr>
+				<tr>
+					<td>Memory used</td>
+					<td id="info-window-memory-allocated"></td>
+				</tr>
+				<tr>
+					<td>Maximum number of threads</td>
+					<td id="info-window-go-max-procs"></td>
+				</tr>
+				<tr>
+					<td>Number of goroutines</td>
+					<td id="info-window-n-goroutines"></td>
+				</tr>
+			</table>
+
+			<input type="button" id="info-window-close" value="X"/>
 		</div>
 	</body>
 </html>
