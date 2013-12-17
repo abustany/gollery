@@ -2,5 +2,15 @@
 	"Map view": "Ver la mapa",
 	"List view": "Ver la lista",
 	"There are no pictures with GPS information in this album.": "No hay ningúna photo en este albúm con información GPS.",
-	"Go back": "Volver"
+	"Go back": "Volver",
+	"Full screen": "Pantalla completa",
+	"Info": "Info",
+	"Welcome to Gollery": "Bienvenidos a Gollery",
+	"Howdy! You're using Gollery version": "Hola! Estas ocupando Gollery versión",
+	"System information": "Información del sistema",
+	"Number of thumbnails in the queue": "Número de miniaturas en la cola",
+	"Go version": "Versión de Go",
+	"Memory used": "Memoria usada",
+	"Maximum number of threads": "Número máximo de threads",
+	"Number of goroutines": "Número de goroutines"
 }
