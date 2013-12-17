@@ -13,17 +13,19 @@ code base is still moving a lot, and many planned features are still missing.**
   immediately indexed
 * Sorts albums using the date from the EXIF metadata if present
 * Can display a "map of pictures" of an album, if pictures are geotagged
-* Touch friendly - UI suits tablets too and is gesture enabled (handheld UI
-  in the works)
+* Touch friendly - UI suits tablets too and is gesture enabled
+* Fast thumbnailing using ImageMagick
+* Image preloading in the viewer for a responsive UI
+* Internationalized UI (see `src/gollery/static/i18n` for the list of supported
+  languages)
 
 ## Planned features
 
-* Token based access control: user "unlocks" tokens, and each token gives
-  access to a set of albums
-* Admin interface to define tokens and additional album metadata (description
-  etc.), and monitor the server status (thumbnailer etc.)
+* Access control, using Mozilla Persona/other ID providers for accounts
+* Admin interface to define permissions and additional album metadata
+  (description etc.)
 * Less ugly UI
-* Caching to make things snappier
+* Caching on server side to make things snappier
 * Abstract storage backend to allow running the app on Google App Engine or
   Heroku, against storage services like S3 or Google Cloud Storage
 * Initial setup assistant
@@ -31,12 +33,14 @@ code base is still moving a lot, and many planned features are still missing.**
 ## Requirements
 
 * [Go](http://golang.org/) version 1.2
-* [ImageMagick](http://imagemagick.org/) (required by the gographics/imagick
-  module)
+* [ImageMagick](http://imagemagick.org/)
 * [exiv2](http://exiv2.org/) (required by goexiv)
 * [compass](http://compass-style.org/) (for compiling the SCSS files to CSS)
 
 Those dependencies should be packaged in any distribution.
+
+Note that go and compass are only needed for building Gollery, the resulting
+binary will not need those tools.
 
 ## 1 minute startup guide
 
@@ -69,4 +73,5 @@ not compile them with the module. Run `go version` to make sure you're using
 Go 1.2.
 
 If the installation fails because of some other missing symbols, you're maybe
-missing the system dependecies (see #requirements).
+missing some system dependencies (see the [requirements](#requirements)
+section), or maybe a C++ compiler altogether.
