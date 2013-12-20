@@ -94,7 +94,7 @@ Viewer.prototype = {
 	},
 
 	pictureUrl: function(path) {
-		return document.location.origin + '/thumbnails/large/' + this.album.name + '/' + path;
+		return '/thumbnails/large/' + this.album.name + '/' + path;
 	},
 
 	// Clamps an index to the album size

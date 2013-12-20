@@ -17,7 +17,7 @@ function AlbumFrame(album, href) {
 	img.src = AlbumFrame.DefaultCoverUrl;
 
 	if (album.cover) {
-		img.src = document.location.origin + '/thumbnails/small/' + album.cover;
+		img.src = '/thumbnails/small/' + album.cover;
 	}
 
 	a.appendChild(img);
@@ -32,7 +32,7 @@ function AlbumFrame(album, href) {
 	this.el = frame;
 };
 
-AlbumFrame.DefaultCoverUrl = document.location.origin + '/images/camera-roll.png';
+AlbumFrame.DefaultCoverUrl = '/images/camera-roll.png';
 
 return AlbumFrame;
 
