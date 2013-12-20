@@ -25,7 +25,10 @@ var I18N = {
 
 	G: function(str) {
 		if (I18N._catalog === undefined) {
-			console.log('Locale catalog hasn\'t been loaded yet');
+			if (I18N.locale !== 'en') {
+				console.log('Locale catalog hasn\'t been loaded yet');
+			}
+
 			return str;
 		}
 
