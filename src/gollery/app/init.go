@@ -13,7 +13,7 @@ var Monitor *monitor.Monitor
 var Thumbnailer *thumbnailer.Thumbnailer
 
 // auto defined by the revel builder
-var REVEL_APP_VERSION string
+var APP_VERSION string
 var Version string
 
 func init() {
@@ -31,7 +31,7 @@ func init() {
 		revel.ActionInvoker,           // Invoke the action.
 	}
 
-	Version = REVEL_APP_VERSION
+	Version = APP_VERSION
 
 	revel.OnAppStart(func() {
 		initServices()
