@@ -1,4 +1,4 @@
-define([], function() {
+define(['loadingscreen'], function(LoadingScreen) {
 
 function PictureFrame(album, pic, href) {
 	this.album = album;
@@ -19,9 +19,16 @@ function PictureFrame(album, pic, href) {
 
 	frame.appendChild(a);
 
+	LoadingScreen.push();
+
 	var img = document.createElement('img');
 	img.src = url;
 	img.setAttribute('title', pic.path);
+
+	img.addEventListener('load', function() {
+		LoadingScreen.pop();
+	});
+
 	a.appendChild(img);
 
 	this.el = frame;

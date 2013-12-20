@@ -1,4 +1,4 @@
-define([], function() {
+define(['loadingscreen'], function(LoadingScreen) {
 
 function AlbumFrame(album, href) {
 	var frame = document.createElement('div');
@@ -13,12 +13,18 @@ function AlbumFrame(album, href) {
 
 	frame.appendChild(a);
 
+	LoadingScreen.push();
+
 	var img = document.createElement('img');
 	img.src = AlbumFrame.DefaultCoverUrl;
 
 	if (album.cover) {
 		img.src = '/thumbnails/small/' + album.cover;
 	}
+
+	img.addEventListener('load', function() {
+		LoadingScreen.pop();
+	});
 
 	a.appendChild(img);
 

@@ -1,4 +1,4 @@
-define(['albumlist', 'browser', 'flipper', 'i18n', 'infowindow', 'jquery', 'viewer'], function(AlbumList, Browser, Flipper, I18N, InfoWindow, $, Viewer) {
+define(['albumlist', 'browser', 'flipper', 'i18n', 'infowindow', 'jquery', 'loadingscreen', 'viewer'], function(AlbumList, Browser, Flipper, I18N, InfoWindow, $, LoadingScreen, Viewer) {
 
 var _ = I18N.G;
 
@@ -129,11 +129,25 @@ var App = {
 		document.location.hash = route;
 	},
 
+	// Wrapper arround $.getJSON that handles the logging screen
+	loadJSON: function(url, callback) {
+		var app = this;
+
+		LoadingScreen.push();
+
+		return $.getJSON(url, function() {
+			LoadingScreen.pop();
+
+			var args = Array.prototype.slice.apply(arguments);
+			callback.apply(app, args)
+		});
+	},
+
 	loadAlbums: function() {
 		var app = this;
 		var albumList = $('#album-list');
 
-		$.getJSON('/albums/', function(data) {
+		app.loadJSON('/albums/', function(data) {
 			data.sort(app.albumCompareFunc);
 			app.albumList.update(data);
 		});
@@ -291,7 +305,7 @@ var App = {
 			return;
 		}
 
-		$.getJSON('/albums/' + name, function(data) {
+		app.loadJSON('/albums/' + name, function(data) {
 			app.sortPicturesByDate(data.pictures);
 			app.parseGpsMetadata(data.pictures);
 

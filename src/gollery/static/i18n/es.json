@@ -12,5 +12,6 @@
 	"Go version": "Versión de Go",
 	"Memory used": "Memoria usada",
 	"Maximum number of threads": "Número máximo de threads",
-	"Number of goroutines": "Número de goroutines"
+	"Number of goroutines": "Número de goroutines",
+	"Loading (%1 left)": "Cargando (quedan %1)"
 }

@@ -10,6 +10,7 @@ var I18N = {
 
 		// Messages are in english by default
 		if (locale === 'en') {
+			I18N.locale = 'en';
 			return;
 		}
 
