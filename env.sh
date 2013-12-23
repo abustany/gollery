@@ -5,7 +5,11 @@ if [ "$0" != "bash" -a "$0" != "-bash" ]; then
 	return
 fi
 
-MYDIR="$(dirname $(readlink -m $BASH_SOURCE))"
+if readlink --help >/dev/null 2>&1; then
+	MYDIR="$(dirname $(readlink -m $BASH_SOURCE))"
+else
+	MYDIR="$(dirname $(perl -MCwd -e "print Cwd::realpath(\"$BASH_SOURCE\")"))"
+fi
 
 case "$GOPATH" in
 	"$MYDIR" | "$MYDIR:"*)
