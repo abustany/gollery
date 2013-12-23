@@ -5,7 +5,7 @@ function PictureFrame(app, album, pic, href) {
 	this.pic = pic;
 	this.href = href;
 
-	var url = '/thumbnails/small/' + album + '/' + pic.path;
+	var url = '/thumbnails/small/' + album + '/' + pic.path.replace(/#/g, '%23');
 
 	var frame = document.createElement('div');
 	frame.className = 'picture-frame';

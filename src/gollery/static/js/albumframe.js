@@ -28,7 +28,7 @@ function AlbumFrame(app, album, href) {
 	img.src = AlbumFrame.DefaultCoverUrl;
 
 	if (album.cover) {
-		img.src = '/thumbnails/small/' + album.cover;
+		img.src = '/thumbnails/small/' + album.cover.replace(/#/g, '%23');
 	}
 
 	a.appendChild(img);
