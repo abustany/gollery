@@ -312,6 +312,10 @@ func (t *Thumbnailer) createThumbnail(thumbnailer *C.GolleryThumbnailer, filePat
 		return utils.WrapError(err, "Invalid path '%s'", filePath)
 	}
 
+	if path.Dir(normalizedPath) == t.RootDir {
+		revel.INFO.Printf("Not thumbnailing file in root directory: %s", normalizedPath)
+	}
+
 	fileId := normalizedPath[1+len(t.RootDir):]
 
 	startTime := time.Now()
