@@ -1,6 +1,7 @@
 define(['albumframe', 'jquery'], function(AlbumFrame, $) {
 
-function AlbumList() {
+function AlbumList(app) {
+	this.app = app;
 }
 
 AlbumList.prototype = {
@@ -11,7 +12,7 @@ AlbumList.prototype = {
 
 		$.each(albums, function(idx, album) {
 			var href = '#browse:' + album.name;
-			var albumFrame = new AlbumFrame(album, href);
+			var albumFrame = new AlbumFrame(this.app, album, href);
 
 			$list.append(albumFrame.el);
 		});

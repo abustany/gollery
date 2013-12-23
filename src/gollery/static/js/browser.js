@@ -164,7 +164,7 @@ Browser.prototype = {
 
 	addPicture: function(pic) {
 		var href = '#view:' + this.album.name + '/' + pic.path;
-		var frame = new PictureFrame(this.album.name, pic, href);
+		var frame = new PictureFrame(this.app, this.album.name, pic, href);
 
 		$('#picture-list').append(frame.el);
 	},

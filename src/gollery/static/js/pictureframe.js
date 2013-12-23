@@ -1,6 +1,6 @@
 define(['loadingscreen'], function(LoadingScreen) {
 
-function PictureFrame(album, pic, href) {
+function PictureFrame(app, album, pic, href) {
 	this.album = album;
 	this.pic = pic;
 	this.href = href;
@@ -22,12 +22,17 @@ function PictureFrame(album, pic, href) {
 	LoadingScreen.push();
 
 	var img = document.createElement('img');
-	img.src = url;
-	img.setAttribute('title', pic.path);
 
 	img.addEventListener('load', function() {
 		LoadingScreen.pop();
 	});
+
+	img.addEventListener('error', function() {
+		app.oops('Cannot load image ' + img.src);
+	});
+
+	img.src = url;
+	img.setAttribute('title', pic.path);
 
 	a.appendChild(img);
 

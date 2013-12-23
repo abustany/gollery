@@ -57,8 +57,14 @@ function Viewer(app) {
 		});
 	}
 
-	$('#viewer-img').load(function() {
+	var $viewer_img = $('#viewer-img');
+
+	$viewer_img.load(function() {
 		viewer.loadSiblings();
+	});
+
+	$viewer_img.on('error', function() {
+		app.oops('Cannot load image ' + $viewer_img.prop('src'));
 	});
 }
 

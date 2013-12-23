@@ -1,6 +1,6 @@
 define(['loadingscreen'], function(LoadingScreen) {
 
-function AlbumFrame(album, href) {
+function AlbumFrame(app, album, href) {
 	var frame = document.createElement('div');
 	frame.className = 'album-frame';
 
@@ -16,15 +16,20 @@ function AlbumFrame(album, href) {
 	LoadingScreen.push();
 
 	var img = document.createElement('img');
+
+	img.addEventListener('load', function() {
+		LoadingScreen.pop();
+	});
+
+	img.addEventListener('error', function() {
+		app.oops('Cannot load image ' + img.src);
+	});
+
 	img.src = AlbumFrame.DefaultCoverUrl;
 
 	if (album.cover) {
 		img.src = '/thumbnails/small/' + album.cover;
 	}
-
-	img.addEventListener('load', function() {
-		LoadingScreen.pop();
-	});
 
 	a.appendChild(img);
 

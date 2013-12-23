@@ -8,7 +8,7 @@ var App = {
 
 		console.log('Starting application');
 
-		app.albumList = new AlbumList();
+		app.albumList = new AlbumList(app);
 		app.browser = new Browser(app);
 		app.infoWindow = new InfoWindow();
 		app.listMapFlipper = new Flipper('#browser-content-flipper');
@@ -135,12 +135,18 @@ var App = {
 
 		LoadingScreen.push();
 
-		return $.getJSON(url, function() {
+		var jqxhr = $.getJSON(url, function() {
 			LoadingScreen.pop();
 
 			var args = Array.prototype.slice.apply(arguments);
-			callback.apply(app, args)
+			callback.apply(app, args);
 		});
+
+		jqxhr.fail(function(xhr, status, error) {
+			app.oops(error);
+		});
+
+		return jqxhr;
 	},
 
 	loadAlbums: function() {
