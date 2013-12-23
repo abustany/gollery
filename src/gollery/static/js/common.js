@@ -9,6 +9,22 @@ var Common = {
 		$(selector).each(function(idx, x) {
 			x.ontouchmove = Common._preventDefaultEvent;
 		});
+	},
+
+	hashRegex: /#/g,
+
+	pictureUrl: function(size, album, filename) {
+		var url = '/thumbnails/';
+		url += size;
+		url += '/';
+		url += album.replace(Common.hashRegex, '%23');
+
+		if (filename) {
+			url += '/';
+			url += filename.replace(Common.hashRegex, '%23');
+		}
+
+		return url;
 	}
 };
 

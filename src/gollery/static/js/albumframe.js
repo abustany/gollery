@@ -1,4 +1,4 @@
-define(['loadingscreen'], function(LoadingScreen) {
+define(['common', 'loadingscreen'], function(Common, LoadingScreen) {
 
 function AlbumFrame(app, album, href) {
 	var frame = document.createElement('div');
@@ -28,7 +28,7 @@ function AlbumFrame(app, album, href) {
 	img.src = AlbumFrame.DefaultCoverUrl;
 
 	if (album.cover) {
-		img.src = '/thumbnails/small/' + album.cover.replace(/#/g, '%23');
+		img.src = Common.pictureUrl('small', album.cover);
 	}
 
 	a.appendChild(img);

@@ -1,11 +1,11 @@
-define(['loadingscreen'], function(LoadingScreen) {
+define(['common', 'loadingscreen'], function(Common, LoadingScreen) {
 
 function PictureFrame(app, album, pic, href) {
 	this.album = album;
 	this.pic = pic;
 	this.href = href;
 
-	var url = '/thumbnails/small/' + album + '/' + pic.path.replace(/#/g, '%23');
+	var url = Common.pictureUrl('small', album, pic.path);
 
 	var frame = document.createElement('div');
 	frame.className = 'picture-frame';

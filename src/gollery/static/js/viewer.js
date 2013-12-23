@@ -100,7 +100,7 @@ Viewer.prototype = {
 	},
 
 	pictureUrl: function(path) {
-		return '/thumbnails/large/' + this.album.name + '/' + path.replace(/#/g, '%23');
+		return Common.pictureUrl('large', this.album.name, path);
 	},
 
 	// Clamps an index to the album size
