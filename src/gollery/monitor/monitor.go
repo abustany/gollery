@@ -67,6 +67,11 @@ func (m *Monitor) monitorRoutine() {
 		case ev := <-m.monitor.Event:
 			revel.TRACE.Printf("Thumbnailer: file event: %s", ev)
 
+			if ev.IsAttrib() {
+				revel.TRACE.Printf("Skipping attribute change event for file %s", ev.Name)
+				continue
+			}
+
 			basename := path.Base(ev.Name)
 
 			if len(basename) > 0 && basename[0] == '.' {
