@@ -385,6 +385,17 @@ var App = {
 		hash += route.param;
 
 		return hash;
+	},
+
+	oops: function(message) {
+		if (this.oopsed) {
+			return;
+		}
+
+		this.oopsed = true;
+
+		$('#oops-screen-error').text(message);
+		$('#oops-screen').css('display', 'table');
 	}
 };
 
