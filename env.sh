@@ -28,8 +28,12 @@ if [ -z "$REVEL_BIN" ]; then
 fi
 
 if [ ! -x "$REVEL_BIN" ]; then
-	echo -n "You don't seem to have the revel binary installed, install it? [y/n] "
-	read X
+	if [ -z "$GOLLERY_INSTALL_REVEL" ]; then
+		echo -n "You don't seem to have the revel binary installed, install it? [y/n] "
+		read X
+	else
+		X=y
+	fi
 
 	if [ "$X" = "y" ]; then
 		go get github.com/robfig/revel/revel
