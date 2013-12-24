@@ -1,8 +1,8 @@
 #!/bin/sh
 
-if [ "$0" != "bash" -a "$0" != "-bash" ]; then
+if [[ "$0" == "$BASH_SOURCE" ]]; then
 	echo "Please source me in a Bash shell!"
-	return
+	exit 1
 fi
 
 if readlink --help >/dev/null 2>&1; then
