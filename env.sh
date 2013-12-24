@@ -5,7 +5,7 @@ if [[ "$0" == "$BASH_SOURCE" ]]; then
 	exit 1
 fi
 
-if readlink --help >/dev/null 2>&1; then
+if readlink --help >/dev/null 2>&1 || : ; then
 	MYDIR="$(dirname $(readlink -m $BASH_SOURCE))"
 else
 	MYDIR="$(dirname $(perl -MCwd -e "print Cwd::realpath(\"$BASH_SOURCE\")"))"
@@ -21,7 +21,7 @@ case "$GOPATH" in
 		;;
 esac
 
-REVEL_BIN="$(which revel 2>/dev/null)"
+REVEL_BIN="$(which revel 2>/dev/null || : )"
 
 if [ -z "$REVEL_BIN" ]; then
 	REVEL_BIN="${MYDIR}/bin/revel"
