@@ -68,6 +68,8 @@ function Viewer(app) {
 	});
 }
 
+Viewer.emptyPixel = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+
 Viewer.prototype = {
 	goBackToAlbums: function() {
 		if (!this.album) {
@@ -95,7 +97,7 @@ Viewer.prototype = {
 			this.previousRoute = this.app.previousRoute;
 		}
 
-		$('#viewer-img').attr('src', '');
+		$('#viewer-img').attr('src', Viewer.emptyPixel);
 		$('#viewer-img').attr('src', this.pictureUrl(filename));
 	},
 
