@@ -66,6 +66,10 @@ function Viewer(app) {
 	$viewer_img.on('error', function() {
 		app.oops('Cannot load image ' + $viewer_img.prop('src'));
 	});
+
+	$('#viewer-inner').click(function() {
+		viewer.popupToolbar();
+	});
 }
 
 Viewer.emptyPixel = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
