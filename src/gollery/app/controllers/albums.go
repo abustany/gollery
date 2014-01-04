@@ -5,6 +5,7 @@ import (
 	"github.com/robfig/revel"
 	"gollery/app"
 	"gollery/app/common"
+	"gollery/metadata"
 	"gollery/thumbnailer"
 	"gollery/utils"
 	"math/rand"
@@ -188,7 +189,7 @@ func (c *Albums) listPictures(name string) ([]os.FileInfo, error) {
 func (c *Albums) Show(name string) revel.Result {
 	revel.INFO.Printf("Loading album %s", name)
 
-	if !app.Metadata.CheckAlbumAccess(name, common.GetUser(c.Controller), c.Params.Query.Get("token")) {
+	if !metadata.CheckAlbumAccess(app.Metadata, name, common.GetUser(c.Controller), c.Params.Query.Get("token")) {
 		c.Response.Status = http.StatusForbidden
 		c.Response.ContentType = "application/json"
 		return c.RenderJson(struct{}{})

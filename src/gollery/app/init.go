@@ -10,7 +10,7 @@ import (
 	"runtime"
 )
 
-var Metadata *metadata.MetadataManager
+var Metadata metadata.MetadataManager
 var Monitor *monitor.Monitor
 var Thumbnailer *thumbnailer.Thumbnailer
 
@@ -84,7 +84,7 @@ func initServices() {
 		}
 	}))
 
-	Metadata, err = metadata.NewMetadataManager(common.RootDir, Monitor)
+	Metadata, err = metadata.NewFSMetadataManager(common.RootDir, Monitor)
 
 	if err != nil {
 		panic("Cannot initalize album metadata service: " + err.Error())

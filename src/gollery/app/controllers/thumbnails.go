@@ -5,6 +5,7 @@ import (
 	"github.com/robfig/revel"
 	"gollery/app"
 	"gollery/app/common"
+	"gollery/metadata"
 	"gollery/thumbnailer"
 	"gollery/utils"
 	"net/http"
@@ -21,7 +22,7 @@ var SizeMap = map[string]thumbnailer.ThumbnailSize{
 }
 
 func (t *Thumbnails) Thumbnail(size string, name string) revel.Result {
-	if !app.Metadata.CheckAlbumAccess(common.AlbumNameFromFile(name), common.GetUser(t.Controller), t.Params.Query.Get("token")) {
+	if !metadata.CheckAlbumAccess(app.Metadata, common.AlbumNameFromFile(name), common.GetUser(t.Controller), t.Params.Query.Get("token")) {
 		t.Response.Status = http.StatusForbidden
 		t.Response.ContentType = "text/plain"
 		return t.RenderText("Forbidden")
