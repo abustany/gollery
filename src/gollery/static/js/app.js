@@ -91,7 +91,13 @@ var App = {
 			actionName = tokens.shift();
 
 			$.each(tokens, function(idx, val) {
-				actionOptions[val] = true;
+				var idx = val.indexOf('=');
+
+				if (idx === -1) {
+					actionOptions[val] = true;
+				} else {
+					actionOptions[val.slice(0, idx)] = val.slice(1 + idx);
+				}
 			});
 
 			actionParam = hash.slice(1 + colIdx);
@@ -379,6 +385,13 @@ var App = {
 			for (o in route.options) {
 				hash += ',';
 				hash += o;
+
+				var optVal = route.options[o];
+
+				if (typeof(optVal) !== 'boolean') {
+					hash += '=';
+					hash += optVal;
+				}
 			}
 		}
 
