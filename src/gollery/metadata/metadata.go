@@ -81,6 +81,10 @@ func (m *MetadataManager) deleteMetadata(album string) {
 
 func (m *MetadataManager) monitorEventsRoutine() {
 	for x := range m.monitorEvents {
+		if basename := path.Base(x.Path()); basename != METADATA_FILENAME {
+			continue
+		}
+
 		if ev, ok := x.(*monitor.DeleteEvent); ok {
 			var albumName string
 
@@ -118,6 +122,8 @@ func (m *MetadataManager) monitorEventsRoutine() {
 			if metadataFilePath == "" {
 				continue
 			}
+
+			revel.INFO.Printf("(re)Indexing metadata file %s", metadataFilePath)
 
 			err := m.indexAlbumMetadataFile(metadataFilePath)
 
