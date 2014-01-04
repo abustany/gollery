@@ -95,7 +95,7 @@ func (c *Albums) Index() revel.Result {
 func (c *Albums) getAlbumCover(name string) (string, error) {
 	fis, err := c.listPictures(name)
 
-	if (len(fis) == 0) {
+	if len(fis) == 0 {
 		return "", nil
 	}
 
