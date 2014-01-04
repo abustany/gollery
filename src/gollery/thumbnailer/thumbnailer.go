@@ -136,6 +136,11 @@ func (t *Thumbnailer) checkCacheDir(dirPath string) ([]string, error) {
 
 func (t *Thumbnailer) monitorEventsRoutine() {
 	for x := range t.monitorEvents {
+		if basename := path.Base(x.Path()); len(basename) > 0 && basename[0] == '.' {
+			revel.TRACE.Printf("Skipping thumbnailer event for hidden file %s", x.Path())
+			continue
+		}
+
 		if ev, ok := x.(*monitor.DeleteEvent); ok {
 			if ev.IsDirectory {
 				t.ScheduleThumbnail(THUMBNAILER_CLEANUP_JOB_ID)
