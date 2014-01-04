@@ -6,13 +6,14 @@ function AlbumList(app) {
 
 AlbumList.prototype = {
 	update: function(albums) {
+		var albumList = this;
 		var $list = $('#album-list');
 
 		$list.html('');
 
 		$.each(albums, function(idx, album) {
 			var href = '#browse:' + album.name;
-			var albumFrame = new AlbumFrame(this.app, album, href);
+			var albumFrame = new AlbumFrame(albumList.app, album, href);
 
 			$list.append(albumFrame.el);
 		});
