@@ -5,7 +5,6 @@ import (
 	"github.com/robfig/revel"
 	"gollery/utils"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -69,13 +68,6 @@ func (m *Monitor) monitorRoutine() {
 
 			if ev.IsAttrib() {
 				revel.TRACE.Printf("Skipping attribute change event for file %s", ev.Name)
-				continue
-			}
-
-			basename := path.Base(ev.Name)
-
-			if len(basename) > 0 && basename[0] == '.' {
-				revel.TRACE.Printf("Skipping event for hidden file %s", ev.Name)
 				continue
 			}
 
