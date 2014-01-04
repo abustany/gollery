@@ -101,6 +101,14 @@ Viewer.prototype = {
 		$('#viewer-img').attr('src', this.pictureUrl(filename));
 	},
 
+	popupToolbar: function() {
+		$('#viewer-toolbar-inner').removeClass('viewer-toolbar-autohide');
+
+		setTimeout(function() {
+			$('#viewer-toolbar-inner').toggleClass('viewer-toolbar-autohide', true);
+		}, 1000);
+	},
+
 	pictureUrl: function(path) {
 		return Common.pictureUrl('large', this.album.name, path);
 	},

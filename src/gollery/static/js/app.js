@@ -367,12 +367,7 @@ var App = {
 			app.viewer.view(data, filename);
 
 			if (!wasInViewerMode) {
-				$('#viewer-toolbar-inner').removeClass('viewer-toolbar-autohide');
-
-				setTimeout(function() {
-					$('#viewer-toolbar-inner').toggleClass('viewer-toolbar-autohide', true);
-					app.hideViewerToolbarTimeout = undefined;
-				}, 1000);
+				app.viewer.popupToolbar();
 			}
 		});
 	},
