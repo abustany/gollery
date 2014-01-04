@@ -4,6 +4,7 @@ import (
 	"github.com/robfig/revel"
 	"github.com/robfig/revel/modules/jobs/app/jobs"
 	"gollery/app/common"
+	"gollery/auth"
 	"gollery/metadata"
 	"gollery/monitor"
 	"gollery/thumbnailer"
@@ -13,6 +14,7 @@ import (
 var Metadata metadata.MetadataManager
 var Monitor *monitor.Monitor
 var Thumbnailer *thumbnailer.Thumbnailer
+var Groups auth.GroupBackend
 
 // auto defined by the revel builder
 var APP_VERSION string
@@ -72,6 +74,12 @@ func initServices() {
 
 	if err != nil {
 		panic("Cannot initialize thumbnailer service: " + err.Error())
+	}
+
+	Groups, err = auth.NewFSGroupBackend(common.RootDir, Monitor)
+
+	if err != nil {
+		panic("Cannot initialize groups backend: " + err.Error())
 	}
 
 	revel.INFO.Print("Started thumbnailing service")
