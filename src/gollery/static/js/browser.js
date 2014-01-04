@@ -1,4 +1,4 @@
-define(['jquery', 'leaflet', 'pictureframe'], function($, Leaflet, PictureFrame) {
+define(['common', 'jquery', 'leaflet', 'pictureframe'], function(Common, $, Leaflet, PictureFrame) {
 
 function Browser(app) {
 	var browser = this;
@@ -62,7 +62,7 @@ Browser.prototype = {
 			var g = pic.gpsCoords;
 
 			if (g) {
-				var thumbUrl = '/thumbnails/small/' + album.name + '/' + pic.path;
+				var thumbUrl = Common.pictureUrl('small', album.name, pic.path);
 
 				var iconHtml = '';
 				iconHtml += '<a href="#view:' + album.name + '/' + pic.path + '">';
