@@ -5,7 +5,7 @@ function PictureFrame(app, album, pic, href) {
 	this.pic = pic;
 	this.href = href;
 
-	var url = Common.pictureUrl('small', album, pic.path);
+	var url = Common.pictureUrl(app, 'small', album, pic.path);
 
 	var frame = document.createElement('div');
 	frame.className = 'picture-frame';

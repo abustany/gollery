@@ -114,7 +114,7 @@ Viewer.prototype = {
 	},
 
 	pictureUrl: function(path) {
-		return Common.pictureUrl('large', this.album.name, path);
+		return Common.pictureUrl(this.app, 'large', this.album.name, path);
 	},
 
 	// Clamps an index to the album size

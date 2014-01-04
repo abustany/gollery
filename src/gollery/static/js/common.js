@@ -13,7 +13,7 @@ var Common = {
 
 	hashRegex: /#/g,
 
-	pictureUrl: function(size, album, filename) {
+	pictureUrl: function(app, size, album, filename) {
 		var url = '/thumbnails/';
 		url += size;
 		url += '/';
@@ -22,6 +22,13 @@ var Common = {
 		if (filename) {
 			url += '/';
 			url += filename.replace(Common.hashRegex, '%23');
+		}
+
+		var token = app.albumTokens[album];
+
+		if (token) {
+			url += '?token=';
+			url += token;
 		}
 
 		return url;

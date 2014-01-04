@@ -13,6 +13,7 @@ var App = {
 		app.infoWindow = new InfoWindow();
 		app.listMapFlipper = new Flipper('#browser-content-flipper');
 		app.viewer = new Viewer(app);
+		app.albumTokens = {};
 
 		app.loadAlbums();
 
@@ -317,7 +318,15 @@ var App = {
 			return;
 		}
 
-		app.loadJSON('/albums/' + name, function(data) {
+		var albumUrl = '/albums/' + name;
+
+		var albumToken = app.albumTokens[name];
+
+		if (albumToken) {
+			albumUrl += '?token=' + albumToken;
+		}
+
+		app.loadJSON(albumUrl, function(data) {
 			app.sortPicturesByDate(data.pictures);
 			app.parseGpsMetadata(data.pictures);
 
@@ -340,6 +349,10 @@ var App = {
 		}
 
 		if (album) {
+			if (options.token) {
+				app.albumTokens[album] = options.token;
+			}
+
 			app.loadAlbum(album, function(data) {
 				app.browser.browse(data);
 			});

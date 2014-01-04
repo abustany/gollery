@@ -62,7 +62,7 @@ Browser.prototype = {
 			var g = pic.gpsCoords;
 
 			if (g) {
-				var thumbUrl = Common.pictureUrl('small', album.name, pic.path);
+				var thumbUrl = Common.pictureUrl(browser.app, 'small', album.name, pic.path);
 
 				var iconHtml = '';
 				iconHtml += '<a href="#view:' + album.name + '/' + pic.path + '">';

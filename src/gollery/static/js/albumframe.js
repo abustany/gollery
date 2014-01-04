@@ -28,7 +28,7 @@ function AlbumFrame(app, album, href) {
 	img.src = AlbumFrame.DefaultCoverUrl;
 
 	if (album.cover) {
-		img.src = Common.pictureUrl('small', album.cover);
+		img.src = Common.pictureUrl(app, 'small', album.cover);
 	}
 
 	a.appendChild(img);
