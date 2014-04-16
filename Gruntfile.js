@@ -20,6 +20,16 @@ module.exports = function (grunt) {
 			},
 			build: {}
 		},
+		typescript: {
+			build: {
+				src: ['src/gollery/static/typescript/*.ts'],
+				dest: 'src/gollery/static/js',
+				options: {
+					module: 'amd',
+					basePath: 'src/gollery/static/typescript'
+				}
+			}
+		},
 		watch: {
 			sass: {
 				files: ['src/gollery/static/sass/*'],
@@ -28,13 +38,18 @@ module.exports = function (grunt) {
 			js: {
 				files: ['src/gollery/static/js/*'],
 				tasks: ['requirejs']
+			},
+			typescript: {
+				files: ['src/gollery/static/typescript/*.ts'],
+				tasks: ['typescript']
 			}
 		}
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-compass');
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
+	grunt.loadNpmTasks('grunt-typescript');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 
-	grunt.registerTask('default', ['compass', 'requirejs']);
+	grunt.registerTask('default', ['compass', 'typescript', 'requirejs']);
 };
