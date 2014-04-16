@@ -35,23 +35,23 @@ code base is still moving a lot, and many planned features are still missing.**
 * [Go](http://golang.org/) version 1.2
 * [ImageMagick](http://imagemagick.org/)
 * [exiv2](http://exiv2.org/) (required by goexiv)
-* [compass](http://compass-style.org/) (for compiling the SCSS files to CSS)
+* [grunt](http://gruntjs.com) (for building the UI bits)
 
 Those dependencies should be packaged in any distribution.
 
-Note that go and compass are only needed for building Gollery, the resulting
+Note that go and grunt are only needed for building Gollery, the resulting
 binary will not need those tools.
 
 ## 1 minute startup guide
 
 * Clone the source code
 * Install the dependencies (on Fedora/RedHat systems, you need the packages
-  `exiv2-devel`, `ImageMagick-devel` and `rubygem-compass`, on Ubuntu it's
-  probably `libexiv2-dev`, `libmagickwand-dev` and `ruby-compass`)
+  `exiv2-devel`, `ImageMagick-devel` and `nodejs-grunt-cli`, on Ubuntu it's
+  probably `libexiv2-dev`, `libmagickwand-dev`, and get grunt using `npm`)
 * Setup your environment (`GOPATH`) for running the app by sourcing the `env.sh`
   file in your shell (answer "y" when it prompts you to install the revel tool)
 * Install the required go packages with `go get gollery/...`
-* Generate the CSS files with `(cd src/gollery/static && compass compile)`
+* Generate the UI files with `grunt`
 * Copy `src/gollery/conf/app.conf.dist` to `src/gollery/conf/app.conf` and edit
   the top lines to set at least the path to the folder with your pictures
 * Start the application with `./bin/revel run gollery`
