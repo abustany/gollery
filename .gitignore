@@ -10,3 +10,5 @@
 /src/gollery/app/tmp
 /src/code.google.com
 /src/github.com
+/node_modules
+/src/gollery/static/index.js
