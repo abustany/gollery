@@ -13,7 +13,10 @@ module.exports = function (grunt) {
 				baseUrl: 'src/gollery/static/js',
 				mainConfigFile: 'src/gollery/static/js/main.js',
 				name: 'main',
-				out: 'src/gollery/static/index.js'
+				out: 'src/gollery/static/index.js',
+				optimize: 'uglify2',
+				generateSourceMaps: true,
+				preserveLicenseComments: false
 			},
 			build: {}
 		},
