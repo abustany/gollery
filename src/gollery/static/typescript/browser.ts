@@ -1,64 +1,67 @@
-define(['jquery', 'leaflet', 'pictureframe'], function($, Leaflet, PictureFrame) {
+import $ = require('jquery');
+import PictureFrame = require('pictureframe');
 
-function Browser(app) {
-	var browser = this;
+/// <reference path="leaflet.d.ts" />
 
-	browser.app = app;
+class Browser {
+	private init = (() => {
+		L.Icon.Default.imagePath = '/images';
+	})();
 
-	$('#top-bar-browser-back-button').click(function() {
-		browser.app.navigate('');
-	});
-
-	Leaflet.Icon.Default.imagePath = '/images';
-
-	var osmLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+	private static osmLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 		attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
 	});
 
-	browser.map = Leaflet.map('browser-map-view', {
-		center: [52.5079, 13.4854],
-		zoom: 13
-	});
+	private map: L.Map;
+	private markers: L.LayerGroup;
+	private album: any;
 
-	osmLayer.addTo(browser.map);
+	constructor(private app: any) {
+		$('#top-bar-browser-back-button').click(() => {
+			this.app.navigate('');
+		});
 
-	browser.markers = Leaflet.layerGroup();
-	browser.markers.addTo(browser.map);
+		this.map = L.map('browser-map-view', {
+			center: L.latLng([52.5079, 13.4854]),
+			zoom: 13
+		});
 
-	$('#browser-map-button').click(function() {
-		browser.toggleMap();
-	});
-}
+		Browser.osmLayer.addTo(this.map);
 
-Browser.prototype = {
-	browse: function(album) {
-		var browser = this;
+		this.markers = L.layerGroup();
+		this.markers.addTo(this.map);
 
-		if (browser.album === album) {
+		$('#browser-map-button').click(() => {
+			this.toggleMap();
+		});
+	}
+
+	browse(album: any): void {
+		if (this.album === album) {
 			return;
 		}
 
-		browser.album = album;
+		this.album = album;
 
 		$('#picture-list').html('');
 
 		$('#top-bar-browser-album-title').text(album ? album.name : '');
 
-		if (!browser.album) {
+		if (!this.album) {
 			return;
 		}
 
-		var boundingBox = browser.calculateGpsBoundingBox(album);
+		var boundingBox = this.calculateGpsBoundingBox(album);
 
 		if (boundingBox !== null) {
-			browser.map.fitBounds(boundingBox);
+			this.map.fitBounds(boundingBox);
 		}
 
 		$('#browser-content').toggleClass('browser-no-map', !boundingBox);
 
-		browser.markers.clearLayers();
+		this.markers.clearLayers();
 
-		$.each(album.pictures, function(idx, pic) {
+		$.each(album.pictures, (idx, pic) => {
 			var g = pic.gpsCoords;
 
 			if (g) {
@@ -69,16 +72,16 @@ Browser.prototype = {
 				iconHtml += '<img id="browser-img-' + idx + '" src="' + thumbUrl + '"/>';
 				iconHtml += '</a>';
 
-				var icon = Leaflet.divIcon({
+				var icon = L.divIcon({
 					html: iconHtml,
 					className: 'browser-map-icon'
 				});
 
-				var marker = Leaflet.marker(g, {
+				var marker = L.marker(g, {
 					icon: icon
 				});
 
-				marker.addTo(browser.markers);
+				this.markers.addLayer(marker);
 
 				// If we can, use the EXIF metadata to compute the center of the picture,
 				// and a better clip rectangle that from the top left
@@ -112,12 +115,12 @@ Browser.prototype = {
 				}
 			}
 
-			browser.addPicture(pic);
+			this.addPicture(pic);
 		});
-	},
+	}
 
-	calculateGpsBoundingBox: function(album) {
-		var min = function(a, b) {
+	calculateGpsBoundingBox(album: any): L.LatLngBounds {
+		var min = (a, b) => {
 			if (a === undefined) {
 				return b;
 			}
@@ -125,7 +128,7 @@ Browser.prototype = {
 			return (a < b ? a : b);
 		}
 
-		var max = function(a, b) {
+		var max = (a, b) => {
 			if (a === undefined) {
 				return b;
 			}
@@ -159,17 +162,17 @@ Browser.prototype = {
 			return null;
 		}
 
-		return [[minLat, minLon], [maxLat, maxLon]];
-	},
+		return L.latLngBounds(L.latLng([minLat, minLon]), L.latLng([maxLat, maxLon]));
+	}
 
-	addPicture: function(pic) {
+	addPicture(pic: any): void {
 		var href = '#view:' + this.album.name + '/' + pic.path;
 		var frame = new PictureFrame(this.app, this.album.name, pic, href);
 
 		$('#picture-list').append(frame.el);
-	},
+	}
 
-	toggleMap: function() {
+	toggleMap(): void {
 		var app = this.app;
 
 		if (!app.route || app.route.action !== 'browse') {
@@ -182,8 +185,6 @@ Browser.prototype = {
 
 		app.navigate(newHash);
 	}
-};
+}
 
-return Browser;
-
-}); // define
+export = Browser;

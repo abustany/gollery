@@ -30,6 +30,13 @@ module.exports = function (grunt) {
 				}
 			}
 		},
+		uglify: {
+			build: {
+				files: {
+					'src/gollery/static/js/leaflet-0.7.1.min.js': ['src/gollery/static/js/leaflet-0.7.1.js']
+				}
+			}
+		},
 		watch: {
 			sass: {
 				files: ['src/gollery/static/sass/*'],
@@ -46,10 +53,11 @@ module.exports = function (grunt) {
 		}
 	});
 
+	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-compass');
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
 	grunt.loadNpmTasks('grunt-typescript');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 
-	grunt.registerTask('default', ['compass', 'typescript', 'requirejs']);
+	grunt.registerTask('default', ['compass', 'uglify', 'typescript', 'requirejs']);
 };
