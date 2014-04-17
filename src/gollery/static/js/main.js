@@ -1,7 +1,7 @@
 requirejs.config({
 	baseUrl: 'js',
 	paths: {
-		'hammer': 'jquery.hammer-1.0.5',
+		'hammer': 'jquery.hammer-full-1.0.6',
 		'jquery': 'jquery-1.11.0'
 	}
 });
