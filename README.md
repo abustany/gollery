@@ -51,7 +51,7 @@ binary will not need those tools.
 * Setup your environment (`GOPATH`) for running the app by sourcing the `env.sh`
   file in your shell (answer "y" when it prompts you to install the revel tool)
 * Install the required go packages with `go get gollery/...`
-* Generate the UI files with `grunt`
+* Generate the UI files with `npm install && grunt`
 * Copy `src/gollery/conf/app.conf.dist` to `src/gollery/conf/app.conf` and edit
   the top lines to set at least the path to the folder with your pictures
 * Start the application with `./bin/revel run gollery`
