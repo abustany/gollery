@@ -13,7 +13,7 @@ class Common {
 
 	static hashRegex = /#/g;
 
-	static pictureUrl(size: string, album: string, filename: string): string {
+	static pictureUrl(size: string, album: string, filename?: string): string {
 		var url = '/thumbnails/';
 		url += size;
 		url += '/';
