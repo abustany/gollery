@@ -1,5 +1,6 @@
 import $ = require('jquery');
 import PictureFrame = require('pictureframe');
+import Leaflet = require('leaflet-wrapper');
 
 /// <reference path="leaflet.d.ts" />
 
@@ -17,6 +18,8 @@ class Browser {
 	private album: any;
 
 	constructor(private app: any) {
+		var x = Leaflet;
+
 		$('#top-bar-browser-back-button').click(() => {
 			this.app.navigate('');
 		});
