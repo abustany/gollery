@@ -44,10 +44,17 @@ binary will not need those tools.
 
 ## 1 minute startup guide
 
+* Install the Gollery build dependencies
+  * **Fedora:** `yum install gcc-c++ git mercurial exiv2-devel ImageMagick-devel
+    npm nodejs-grunt-cli golang`
+  * **Ubuntu:** `apt-get install g++ git mercurial libexiv2-dev
+    libmagickwand-dev npm golang && npm install --global grunt-cli`
+  * **Mac OS X (with Homebrew):** install git and clang by invoking them in a
+    terminal (OS X provide shims that will trigger the installation of the real
+    software when ran), install NodeJS, Go and Mercurial from their upsream
+    websites, install the other dependencies using `brew`: `brew install
+    pkg-config exiv2 imagemagick`
 * Clone the source code
-* Install the dependencies (on Fedora/RedHat systems, you need the packages
-  `exiv2-devel`, `ImageMagick-devel` and `nodejs-grunt-cli`, on Ubuntu it's
-  probably `libexiv2-dev`, `libmagickwand-dev`, and get grunt using `npm`)
 * Setup your environment (`GOPATH`) for running the app by sourcing the `env.sh`
   file in your shell (answer "y" when it prompts you to install the revel tool)
 * Install the required go packages with `go get gollery/...`
