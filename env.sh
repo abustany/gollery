@@ -5,11 +5,14 @@ if [[ "$0" == "$BASH_SOURCE" ]]; then
 	exit 1
 fi
 
-if readlink --help >/dev/null 2>&1 || : ; then
-	MYDIR="$(dirname $(readlink -m $BASH_SOURCE))"
-else
-	MYDIR="$(dirname $(perl -MCwd -e "print Cwd::realpath(\"$BASH_SOURCE\")"))"
-fi
+case "$(uname -s)" in
+	Darwin)
+		MYDIR="$(dirname $(perl -MCwd -e "print Cwd::realpath(\"$BASH_SOURCE\")"))"
+		;;
+	*)
+		MYDIR="$(dirname $(readlink -m $BASH_SOURCE))"
+		;;
+esac
 
 case "$GOPATH" in
 	"$MYDIR" | "$MYDIR:"*)
