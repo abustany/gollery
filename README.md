@@ -42,7 +42,7 @@ Those dependencies should be packaged in any distribution.
 Note that go and grunt are only needed for building Gollery, the resulting
 binary will not need those tools.
 
-## 1 minute startup guide
+## 1 minute startup guide (for developers)
 
 * Install the Gollery build dependencies
   * **Fedora:** `yum install gcc-c++ git mercurial exiv2-devel ImageMagick-devel
@@ -65,6 +65,17 @@ binary will not need those tools.
 * Load the address in your browser (by default, the server will listen on any
   address on port 9000 - so you can access it at [http://localhost:9000/] ).
   The first page load will take some time as the code needs to be compiled.
+
+## Generating a standalone archive ready to be deployed on a server
+
+* Install the Gollery build dependencies
+* Clone the source code
+* Copy `src/gollery/conf/app.conf.dist` to `src/gollery/conf/app.conf` and edit
+  the top lines to suit your needs
+* Run `npm install && grunt package`
+* You should now have a `tar.bz2` archive in the directory ready to deploy
+  **Note:** The archive does not include the configuration file from the
+  previous step.
 
 For more advanced deployment options, refer to the [upstream revel
 documentation](http://robfig.github.io/revel/manual/deployment.html).
