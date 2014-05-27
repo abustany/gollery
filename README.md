@@ -77,6 +77,32 @@ binary will not need those tools.
   **Note:** The archive does not include the configuration file from the
   previous step.
 
+## Generating a standalone archive ready to be deployed on CentOS using Docker
+
+Since Gollery links against system library like ImageMagick, you need to build
+it against the environment you want to deploy in. For example, if your build
+host is a recent Fedora, the resulting binary won't run on CentOS which has a
+much older ImageMagick.  To make building Gollery easier, we provide a
+Dockerfile that can be used to build Gollery in a CentOS container. That way,
+you don't need to install anything on the build host except
+[Docker](http://docker.io/) itself.
+
+The steps to generate a Gollery archive are:
+
+* Install [Docker](http://docker.io). The package is called `docker-io` on
+  Fedora and Ubuntu. Note that after installing Docker, you probably need to add
+  your user to the `docker` group in order to be allowed to use it.
+* Generate a Gollery tarball: `cd build && ./build.sh`
+
+The first build will take a while, since it needs to download the base image,
+and all the dependencies needed to build Gollery. However, all of that will be
+cached, so subsequent builds will be much faster. Once the builds completes,
+there will be a tar.bz2 archive in the `build/out` folder. That archive can be
+unzipped on the target server, and Gollery can be started with the `run.sh`
+script after editing the `app.conf` file as in the other scenarios.
+
+## Other deployment options
+
 For more advanced deployment options, refer to the [upstream revel
 documentation](http://robfig.github.io/revel/manual/deployment.html).
 
