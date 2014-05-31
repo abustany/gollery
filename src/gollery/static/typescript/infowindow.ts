@@ -28,8 +28,8 @@ class InfoWindow {
 			this.hide();
 		});
 
-		this.getStatus((data: any) => {
-			$('#info-window-version').text(data.version || '??');
+		this.getStatus((data: Object) => {
+			$('#info-window-version').text(data['version'] || '??');
 		});
 
 		$('#info-window').on('transitionend', () => {
@@ -49,7 +49,7 @@ class InfoWindow {
 		this.$window.removeClass('show-info');
 	}
 
-	getStatus(cb: (data: any) => void): void {
+	getStatus(cb: (data: Object) => void): void {
 		$.getJSON('/status', (data) => {
 			cb(data);
 		});

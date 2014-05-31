@@ -1,7 +1,9 @@
+import Album = require('album');
 import App = require('app');
 import $ = require('jquery');
-import PictureFrame = require('pictureframe');
 import Leaflet = require('leaflet-wrapper');
+import Picture = require('picture');
+import PictureFrame = require('pictureframe');
 
 /// <reference path="leaflet.d.ts" />
 
@@ -16,7 +18,7 @@ class Browser {
 
 	private map: L.Map;
 	private markers: L.LayerGroup;
-	private album: any;
+	private album: Album;
 
 	constructor(private app: App) {
 		var x = Leaflet;
@@ -40,7 +42,7 @@ class Browser {
 		});
 	}
 
-	browse(album: any): void {
+	browse(album: Album): void {
 		if (this.album === album) {
 			return;
 		}
@@ -81,7 +83,7 @@ class Browser {
 					className: 'browser-map-icon'
 				});
 
-				var marker = L.marker(g, {
+				var marker = L.marker(L.latLng(g), {
 					icon: icon
 				});
 
@@ -123,7 +125,7 @@ class Browser {
 		});
 	}
 
-	calculateGpsBoundingBox(album: any): L.LatLngBounds {
+	calculateGpsBoundingBox(album: Album): L.LatLngBounds {
 		var min = (a, b) => {
 			if (a === undefined) {
 				return b;
@@ -169,7 +171,7 @@ class Browser {
 		return L.latLngBounds(L.latLng([minLat, minLon]), L.latLng([maxLat, maxLon]));
 	}
 
-	addPicture(pic: any): void {
+	addPicture(pic: Picture): void {
 		var href = '#view:' + this.album.name + '/' + pic.path;
 		var frame = new PictureFrame(this.app, this.album.name, pic, href);
 
@@ -183,14 +185,14 @@ class Browser {
 			return;
 		}
 
-		var mapParam = (app.currentRoute.options.map ? '' : ',map');
+		var mapParam = (app.currentRoute.options['map'] ? '' : ',map');
 
 		var newHash = 'browse' + mapParam + ':' + app.currentRoute.param;
 
 		app.navigate(newHash);
 	}
 
-	currentAlbum(): any {
+	currentAlbum(): Album {
 		return this.album;
 	}
 }

@@ -1,7 +1,7 @@
 import $ = require('jquery');
 
 class Flipper {
-	private $item: any;
+	private $item: JQuery;
 
 	constructor(selector: string) {
 		this.$item = $(selector);

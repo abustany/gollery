@@ -1,3 +1,4 @@
+import Album = require('album');
 import AlbumList = require('albumlist');
 import Browser = require('browser');
 import Flipper = require('flipper');
@@ -5,6 +6,8 @@ import I18N = require('i18n');
 import InfoWindow = require('infowindow');
 import $ = require('jquery');
 import LoadingScreen = require('loadingscreen');
+import Picture = require('picture');
+import Route = require('route');
 import Viewer = require('viewer');
 
 class App {
@@ -14,9 +17,9 @@ class App {
 	private listMapFlipper: Flipper;
 	private viewer: Viewer;
 	private navigateSilent: boolean;
-	public currentRoute: any;
-	public previousRoute: any;
-	private currentAlbum: any;
+	public currentRoute: Route;
+	public previousRoute: Route;
+	private currentAlbum: Album;
 	private oopsed: boolean;
 
 	private static HashRoutes: Object = {
@@ -173,11 +176,11 @@ class App {
 		});
 	}
 
-	static albumCompareFunc(a: any, b: any): number {
+	static albumCompareFunc(a: Album, b: Album): number {
 		return a.name.localeCompare(b.name);
 	}
 
-	static sortPicturesByDate(pictures: any[]): void {
+	static sortPicturesByDate(pictures: Picture[]): void {
 		// For each picture, parse the EXIF date (if any)
 		$.each(pictures, function(idx, pic) {
 			if (!pic.metadata) {
@@ -235,7 +238,7 @@ class App {
 		});
 	}
 
-	static parseGpsMetadata(pictures: any[]) {
+	static parseGpsMetadata(pictures: Picture[]) {
 		var parseRational = function(data) {
 			var idx = data.indexOf('/');
 
@@ -333,7 +336,7 @@ class App {
 		});
 	}
 
-	browseAlbum(album: string, options: any): void {
+	browseAlbum(album: string, options: Object): void {
 		var $content_flipper = $('#browser-content-flipper');
 
 		this.setUiMode('browser');
@@ -342,7 +345,7 @@ class App {
 
 		var currentBrowserAlbum = this.browser.currentAlbum();
 
-		if (album && currentBrowserAlbum && currentBrowserAlbum !== album) {
+		if (album && currentBrowserAlbum && currentBrowserAlbum.name !== album) {
 			this.browser.browse(null);
 		}
 
@@ -353,7 +356,7 @@ class App {
 
 			var $toggleViewButton = $('#browser-map-button');
 
-			if (options.map) {
+			if (options['map']) {
 				this.listMapFlipper.flip(true);
 				$toggleViewButton.attr('value', I18N.G('List view'));
 			} else {
@@ -383,7 +386,7 @@ class App {
 		});
 	}
 
-	buildHash(route: any): string {
+	buildHash(route: Route): string {
 		var hash = route.action;
 
 		if (route.options) {

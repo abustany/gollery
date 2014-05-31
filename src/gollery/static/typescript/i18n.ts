@@ -2,7 +2,7 @@ import $ = require('jquery');
 
 class I18N {
 	private static locale = 'en';
-	private static _catalog: any;
+	private static _catalog: Object;
 
 	static setLocale(locale: string): void {
 		if (!locale) {

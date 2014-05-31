@@ -1,4 +1,5 @@
 import $ = require('jquery');
+import Album = require('album');
 import AlbumFrame = require('albumframe');
 import App = require('app');
 
@@ -6,7 +7,7 @@ class AlbumList {
 	constructor(private app: App) {
 	}
 
-	update(albums: any[]): void {
+	update(albums: Album[]): void {
 		var $list = $('#album-list');
 
 		$list.html('');

@@ -1,3 +1,4 @@
+import Album = require('album');
 import App = require('app');
 import Common = require('common');
 import LoadingScreen = require('loadingscreen');
@@ -7,7 +8,7 @@ class AlbumFrame {
 
 	public el: HTMLElement;
 
-	constructor(app: App, album: any, href: string) {
+	constructor(app: App, album: Album, href: string) {
 		var frame = document.createElement('div');
 		frame.className = 'album-frame';
 

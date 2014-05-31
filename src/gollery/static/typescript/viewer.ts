@@ -1,16 +1,18 @@
+import Album = require('album');
 import App = require('app');
 import Common = require('common');
 import $ = require('jquery');
 import Hammer = require('hammer');
+import Route = require('route');
 
 /// <reference path="hammerjs.d.ts"/>
 
 class Viewer {
 	private static emptyPixel = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
 
-	private previousRoute: any;
+	private previousRoute: Route;
 	private filename: string;
-	private album: any;
+	private album: Album;
 	private prevImg: HTMLImageElement;
 	private nextImg: HTMLImageElement;
 
@@ -101,7 +103,7 @@ class Viewer {
 		this.filename = null;
 	}
 
-	view(album: any, filename: string): void {
+	view(album: Album, filename: string): void {
 		this.album = album;
 		this.filename = filename;
 
