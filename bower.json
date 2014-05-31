@@ -1,0 +1,16 @@
+{
+  "name": "gollery",
+  "version": "0.0.0",
+  "homepage": "https://github.com/abustany/gollery",
+  "authors": [
+    "Adrien Bustany <adrien@bustany.org>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "jquery": "~1.11.0",
+    "jquery-hammerjs": "~1.0.6",
+    "leaflet": "~0.7.1",
+    "requirejs": "~2.1.9"
+  }
+}

@@ -1,9 +1,10 @@
 requirejs.config({
 	baseUrl: 'js',
 	paths: {
-		'hammer': 'jquery.hammer-full-1.0.6',
-		'leaflet-wrapper': 'leaflet-0.7.1',
-		'jquery': 'jquery-1.11.0'
+		'hammer': '../vendor/jquery-hammerjs/jquery.hammer',
+		'hammerjs': '../vendor/hammerjs/hammer',
+		'leaflet-wrapper': '../vendor/leaflet/leaflet-src',
+		'jquery': '../vendor/jquery/jquery'
 	}
 });
 

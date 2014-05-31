@@ -30,11 +30,13 @@ module.exports = function (grunt) {
 				}
 			}
 		},
-		uglify: {
-			build: {
-				files: {
-					'src/gollery/static/js/leaflet-0.7.1.min.js': ['src/gollery/static/js/leaflet-0.7.1.js']
-				}
+		bower: {
+			options: {
+				targetDir: 'src/gollery/static/vendor',
+				cleanup: true,
+				layout: 'byComponent'
+			},
+			install: {
 			}
 		},
 		watch: {
@@ -65,8 +67,9 @@ module.exports = function (grunt) {
 						'src/gollery/static/index.html',
 						'src/gollery/static/index.js',
 						'src/gollery/static/index.js.map',
-						'src/gollery/static/js/requirejs-?.?.?.js',
 						'src/gollery/static/stylesheets',
+						'src/gollery/static/vendor/leaflet/*.css',
+						'src/gollery/static/vendor/requirejs/require.js',
 						'src/github.com/robfig/revel/conf/mime-types.conf',
 						'src/github.com/robfig/revel/modules/jobs/conf/routes',
 						'src/github.com/robfig/revel/modules/testrunner/conf/routes',
@@ -91,13 +94,13 @@ module.exports = function (grunt) {
 		}
 	});
 
-	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-compass');
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
 	grunt.loadNpmTasks('grunt-typescript');
 	grunt.loadNpmTasks('grunt-shell');
 	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-bower-task');
 
-	grunt.registerTask('default', ['compass', 'uglify', 'typescript', 'requirejs']);
+	grunt.registerTask('default', ['bower:install', 'compass', 'typescript', 'requirejs']);
 	grunt.registerTask('package', ['default', 'shell:package']);
 };
