@@ -9,5 +9,5 @@ requirejs.config({
 });
 
 require(['app'], function(App){
-	App.start();
+	(new App()).start();
 });

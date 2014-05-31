@@ -1,10 +1,11 @@
+import App = require('app');
 import Common = require('common');
 import LoadingScreen = require('loadingscreen');
 
 class PictureFrame {
 	public el: HTMLElement;
 
-	constructor(app: any, public album: string, public pic: any, public href: string) {
+	constructor(app: App, public album: string, public pic: any, public href: string) {
 		var url = Common.pictureUrl('small', album, pic.path);
 
 		var frame = document.createElement('div');

@@ -1,35 +1,57 @@
-define(['albumlist', 'browser', 'flipper', 'i18n', 'infowindow', 'jquery', 'loadingscreen', 'viewer'], function(AlbumList, Browser, Flipper, I18N, InfoWindow, $, LoadingScreen, Viewer) {
+import AlbumList = require('albumlist');
+import Browser = require('browser');
+import Flipper = require('flipper');
+import I18N = require('i18n');
+import InfoWindow = require('infowindow');
+import $ = require('jquery');
+import LoadingScreen = require('loadingscreen');
+import Viewer = require('viewer');
 
-var _ = I18N.G;
+class App {
+	private albumList: AlbumList;
+	private browser: Browser;
+	private infoWindow: InfoWindow;
+	private listMapFlipper: Flipper;
+	private viewer: Viewer;
+	private navigateSilent: boolean;
+	public currentRoute: any;
+	public previousRoute: any;
+	private currentAlbum: any;
+	private oopsed: boolean;
 
-var App = {
-	start: function() {
-		var app = this;
+	private static HashRoutes: Object = {
+		'browse': 'browseAlbum',
+		'view': 'viewPicture'
+	}
 
+	constructor() {
+	}
+
+	start(): void {
 		console.log('Starting application');
 
-		app.albumList = new AlbumList(app);
-		app.browser = new Browser(app);
-		app.infoWindow = new InfoWindow();
-		app.listMapFlipper = new Flipper('#browser-content-flipper');
-		app.viewer = new Viewer(app);
+		this.albumList = new AlbumList(this);
+		this.browser = new Browser(this);
+		this.infoWindow = new InfoWindow();
+		this.listMapFlipper = new Flipper('#browser-content-flipper');
+		this.viewer = new Viewer(this);
 
-		app.loadAlbums();
+		this.loadAlbums();
 
-		app.setUiMode('album-list');
+		this.setUiMode('album-list');
 
 		I18N.setLocale(window.navigator.language);
 
 		console.log('Application started');
 
-		window.addEventListener('hashchange', function() {
-			app.dispatchHash();
+		window.addEventListener('hashchange', () => {
+			this.dispatchHash();
 		});
 
-		app.dispatchHash();
-	},
+		this.dispatchHash();
+	}
 
-	getUiMode: function() {
+	getUiMode(): string {
 		var mode = null;
 
 		$.each(document.body.className.split(' '), function(idx, val) {
@@ -40,9 +62,9 @@ var App = {
 		});
 
 		return mode;
-	},
+	}
 
-	setUiMode: function(mode) {
+	setUiMode(mode: string): void {
 		var $body = $(document.body);
 		var modeName = 'ui-mode-' + mode;
 		var currentMode = this.getUiMode();
@@ -56,14 +78,9 @@ var App = {
 		}
 
 		$body.addClass(modeName);
-	},
+	}
 
-	hashRoutes: {
-		'browse': 'browseAlbum',
-		'view': 'viewPicture'
-	},
-
-	dispatchHash: function() {
+	dispatchHash(): void {
 		var hash = document.location.hash;
 
 		if (this.navigateSilent) {
@@ -97,23 +114,23 @@ var App = {
 			actionParam = hash.slice(1 + colIdx);
 		}
 
-		for (x in this.hashRoutes) {
+		for (var x in App.HashRoutes) {
 			if (x !== actionName) {
 				continue;
 			}
 
-			var f = this[this.hashRoutes[x]];
+			var f = this[App.HashRoutes[x]];
 
 			if (f === undefined) {
-				console.log('Undefined route function: ' + this.hashRoutes[x]);
+				console.log('Undefined route function: ' + App.HashRoutes[x]);
 				return;
 			}
 
-			if (this.route) {
-				this.previousRoute = this.route;
+			if (this.currentRoute) {
+				this.previousRoute = this.currentRoute;
 			}
 
-			this.route = {
+			this.currentRoute = {
 				action: actionName,
 				param : actionParam,
 				options: actionOptions
@@ -121,49 +138,46 @@ var App = {
 
 			f.call(this, actionParam, actionOptions);
 		}
-	},
+	}
 
-	navigate: function(route, silent) {
+	navigate(route: string, silent: boolean = false): void {
 		this.navigateSilent = !!silent;
 
 		document.location.hash = route;
-	},
+	}
 
 	// Wrapper arround $.getJSON that handles the logging screen
-	loadJSON: function(url, callback) {
-		var app = this;
-
+	loadJSON(url: string, callback: any): JQueryXHR {
 		LoadingScreen.push();
 
-		var jqxhr = $.getJSON(url, function() {
+		var jqxhr = $.getJSON(url, () => {
 			LoadingScreen.pop();
 
 			var args = Array.prototype.slice.apply(arguments);
-			callback.apply(app, args);
+			callback.apply(this, args);
 		});
 
-		jqxhr.fail(function(xhr, status, error) {
-			app.oops(error);
+		jqxhr.fail((xhr, status, error) => {
+			this.oops(error);
 		});
 
 		return jqxhr;
-	},
+	}
 
-	loadAlbums: function() {
-		var app = this;
+	loadAlbums(): void {
 		var albumList = $('#album-list');
 
-		app.loadJSON('/albums/', function(data) {
-			data.sort(app.albumCompareFunc);
-			app.albumList.update(data);
+		this.loadJSON('/albums/', (data) => {
+			data.sort(App.albumCompareFunc);
+			this.albumList.update(data);
 		});
-	},
+	}
 
-	albumCompareFunc: function(a, b) {
+	static albumCompareFunc(a: any, b: any): number {
 		return a.name.localeCompare(b.name);
-	},
+	}
 
-	sortPicturesByDate: function(pictures) {
+	static sortPicturesByDate(pictures: any[]): void {
 		// For each picture, parse the EXIF date (if any)
 		$.each(pictures, function(idx, pic) {
 			if (!pic.metadata) {
@@ -190,7 +204,7 @@ var App = {
 			var minuteStr = exifDate.slice(14, 16);
 			var secondStr = exifDate.slice(17, 19);
 
-			date = new Date(yearStr, monthStr, dayStr, hourStr, minuteStr, secondStr);
+			var date = new Date(yearStr, monthStr, dayStr, hourStr, minuteStr, secondStr);
 
 			if (isNaN(date.getTime())) {
 				console.log('Cannot parse EXIF date ' + exifDate);
@@ -200,7 +214,7 @@ var App = {
 			pic.date = date;
 		});
 
-		pictures.sort(function (a, b) {
+		pictures.sort((a, b) => {
 			// If we have no date at all, fallback on filename lexical sort
 			if (!a.date && !b.date) {
 				return (a.path === b.path ? 0 : (a.path < b.path ? -1 : 1));
@@ -219,9 +233,9 @@ var App = {
 
 			return (ta === tb ? 0 : (ta < tb ? -1 : 1));
 		});
-	},
+	}
 
-	parseGpsMetadata: function(pictures) {
+	static parseGpsMetadata(pictures: any[]) {
 		var parseRational = function(data) {
 			var idx = data.indexOf('/');
 
@@ -282,7 +296,7 @@ var App = {
 			return null;
 		};
 
-		$.each(pictures, function(idx, pic) {
+		$.each(pictures, (idx, pic) => {
 
 			if (!pic.metadata) {
 				return;
@@ -297,64 +311,61 @@ var App = {
 
 			pic.gpsCoords = [lat, lon];
 		});
-	},
+	}
 
-	loadAlbum: function(name, cb) {
-		var app = this;
-
+	loadAlbum(name: string, cb: any): void {
 		// FIXME: The decoding of the hash token seems to behave differently
 		// in Chrome and Firefox (Firefox does the decoding already). As
 		// long as we don't have any % in the album name, doing an extra
 		// decode is harmless.
-		if (this.album && this.album.name === decodeURIComponent(name)) {
-			cb(this.album);
+		if (this.currentAlbum && this.currentAlbum.name === decodeURIComponent(name)) {
+			cb(this.currentAlbum);
 			return;
 		}
 
-		app.loadJSON('/albums/' + name, function(data) {
-			app.sortPicturesByDate(data.pictures);
-			app.parseGpsMetadata(data.pictures);
+		this.loadJSON('/albums/' + name, (data) => {
+			App.sortPicturesByDate(data.pictures);
+			App.parseGpsMetadata(data.pictures);
 
-			app.album = data;
+			this.currentAlbum = data;
 
 			cb(data);
 		});
-	},
+	}
 
-	browseAlbum: function(album, options) {
-		var app = this;
+	browseAlbum(album: string, options: any): void {
 		var $content_flipper = $('#browser-content-flipper');
 
-		app.setUiMode('browser');
+		this.setUiMode('browser');
 
 		$content_flipper.toggleClass('browser-no-album', !album);
 
-		if (album && app.browser.album && app.browser.album.name !== album) {
-			app.browser.browse(null);
+		var currentBrowserAlbum = this.browser.currentAlbum();
+
+		if (album && currentBrowserAlbum && currentBrowserAlbum !== album) {
+			this.browser.browse(null);
 		}
 
 		if (album) {
-			app.loadAlbum(album, function(data) {
-				app.browser.browse(data);
+			this.loadAlbum(album, (data) => {
+				this.browser.browse(data);
 			});
 
 			var $toggleViewButton = $('#browser-map-button');
 
 			if (options.map) {
-				app.listMapFlipper.flip(true);
-				$toggleViewButton.attr('value', _('List view'));
+				this.listMapFlipper.flip(true);
+				$toggleViewButton.attr('value', I18N.G('List view'));
 			} else {
-				app.listMapFlipper.flip(false);
-				$toggleViewButton.attr('value', _('Map view'));
+				this.listMapFlipper.flip(false);
+				$toggleViewButton.attr('value', I18N.G('Map view'));
 			}
 		} else {
-			app.browser.browse(null);
+			this.browser.browse(null);
 		}
-	},
+	}
 
-	viewPicture: function(path) {
-		var app = this;
-
+	viewPicture(path: string): void {
 		var wasInViewerMode = (this.getUiMode() === 'viewer');
 
 		this.setUiMode('viewer');
@@ -363,20 +374,20 @@ var App = {
 		var album = path.slice(0, idx);
 		var filename = path.slice(1+idx);
 
-		app.loadAlbum(album, function(data) {
-			app.viewer.view(data, filename);
+		this.loadAlbum(album, (data) => {
+			this.viewer.view(data, filename);
 
 			if (!wasInViewerMode) {
-				app.viewer.popupToolbar();
+				this.viewer.popupToolbar();
 			}
 		});
-	},
+	}
 
-	buildHash: function(route) {
+	buildHash(route: any): string {
 		var hash = route.action;
 
 		if (route.options) {
-			for (o in route.options) {
+			for (var o in route.options) {
 				hash += ',';
 				hash += o;
 			}
@@ -386,9 +397,9 @@ var App = {
 		hash += route.param;
 
 		return hash;
-	},
+	}
 
-	oops: function(message) {
+	oops(message: string): void {
 		if (this.oopsed) {
 			return;
 		}
@@ -398,8 +409,6 @@ var App = {
 		$('#oops-screen-error').text(message);
 		$('#oops-screen').css('display', 'table');
 	}
-};
+}
 
-return App;
-
-}); // define
+export = App

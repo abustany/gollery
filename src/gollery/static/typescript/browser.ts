@@ -1,3 +1,4 @@
+import App = require('app');
 import $ = require('jquery');
 import PictureFrame = require('pictureframe');
 import Leaflet = require('leaflet-wrapper');
@@ -17,7 +18,7 @@ class Browser {
 	private markers: L.LayerGroup;
 	private album: any;
 
-	constructor(private app: any) {
+	constructor(private app: App) {
 		var x = Leaflet;
 
 		$('#top-bar-browser-back-button').click(() => {
@@ -178,15 +179,19 @@ class Browser {
 	toggleMap(): void {
 		var app = this.app;
 
-		if (!app.route || app.route.action !== 'browse') {
+		if (!app.currentRoute || app.currentRoute.action !== 'browse') {
 			return;
 		}
 
-		var mapParam = (app.route.options.map ? '' : ',map');
+		var mapParam = (app.currentRoute.options.map ? '' : ',map');
 
-		var newHash = 'browse' + mapParam + ':' + app.route.param;
+		var newHash = 'browse' + mapParam + ':' + app.currentRoute.param;
 
 		app.navigate(newHash);
+	}
+
+	currentAlbum(): any {
+		return this.album;
 	}
 }
 

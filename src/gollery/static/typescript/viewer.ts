@@ -1,3 +1,4 @@
+import App = require('app');
 import Common = require('common');
 import $ = require('jquery');
 import Hammer = require('hammer');
@@ -13,7 +14,7 @@ class Viewer {
 	private prevImg: HTMLImageElement;
 	private nextImg: HTMLImageElement;
 
-	constructor(private app: any) {
+	constructor(private app: App) {
 		var x = Hammer;
 		$('#viewer-quit-button').click(() => {
 			this.goBackToAlbums();

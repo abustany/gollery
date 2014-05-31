@@ -1,8 +1,9 @@
 import $ = require('jquery');
 import AlbumFrame = require('albumframe');
+import App = require('app');
 
 class AlbumList {
-	constructor(private app: any) {
+	constructor(private app: App) {
 	}
 
 	update(albums: any[]): void {
