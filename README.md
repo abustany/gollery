@@ -18,10 +18,45 @@ code base is still moving a lot, and many planned features are still missing.**
 * Image preloading in the viewer for a responsive UI
 * Internationalized UI (see `src/gollery/static/i18n` for the list of supported
   languages)
+* Per album access control, either setting a private/public switch or defining a
+  secret access token
+
+### More details about access control
+
+Access control settings are defined by creating a file named `.gollery.metadata`
+in the album folder. If no such file is present, the album is considered public
+and can be viewed by anyone.
+
+The `.gollery.metadata` file should contain a JSON object with any of the
+following keys:
+
+```
+{
+  "public": false,
+  "secretToken": "abcdef"
+}
+```
+
+The `public` defines if the album should be publicly viewable or not. Setting
+`public` to `true` has the same effect as not having a metadata file at all. If
+`public` is set to `false`, then `secretToken` should be defined to an arbitrary
+string, the secret to know in order to view this album. We recommend using only
+letters and digits for the secret token.
+
+Once `public` has been set to `false`, the album will disappear from the list of
+albums in the main page. In order to get access to the private albums, the user
+needs to pass one or many access tokens in the `tokens` URL parameter, like
+this:
+
+```
+http://my.gollery.server/?tokens=oneToken,anotherToken
+```
+
+Tokens will be saved in a cookie, so they don't need to be specified again in
+later loads.
 
 ## Planned features
 
-* Access control, using Mozilla Persona/other ID providers for accounts
 * Admin interface to define permissions and additional album metadata
   (description etc.)
 * Less ugly UI
@@ -29,6 +64,8 @@ code base is still moving a lot, and many planned features are still missing.**
 * Abstract storage backend to allow running the app on Google App Engine or
   Heroku, against storage services like S3 or Google Cloud Storage
 * Initial setup assistant
+* Option to define whether albums with no metadata file should be public or
+  private
 
 ## Requirements
 
