@@ -9,6 +9,7 @@ import LoadingScreen = require('loadingscreen');
 import Picture = require('picture');
 import Route = require('route');
 import Viewer = require('viewer');
+import jqueryCookie = require('jquery.cookie')
 
 class App {
 	private albumList: AlbumList;
@@ -33,6 +34,12 @@ class App {
 	start(): void {
 		console.log('Starting application');
 
+		// Force the jquery.cookie module to be imported
+		var jqCookie = jqueryCookie;
+
+		// Looks up any access token in the URL and saves them in the right cookie
+		this.saveTokens();
+
 		this.albumList = new AlbumList(this);
 		this.browser = new Browser(this);
 		this.infoWindow = new InfoWindow();
@@ -52,6 +59,48 @@ class App {
 		});
 
 		this.dispatchHash();
+	}
+
+	saveTokens(): void {
+		var CookieName = 'gollery_tokens';
+		var queryParams = this.parseQuery();
+
+		if (queryParams['tokens'] === undefined) {
+			return;
+		}
+
+		var newTokens = queryParams['tokens'].split(',');
+
+		var savedTokens: {[index:string]: boolean} = {};
+
+		$.each(($.cookie(CookieName) || '').split(','), (idx, val) => {
+			if (val !== '') {
+				savedTokens[val] = true;
+			}
+		});
+
+		$.each(newTokens, (idx, val) => { savedTokens[val] = true; });
+
+		$.cookie(CookieName, Object.keys(savedTokens).join(','));
+	}
+
+	parseQuery(): {[name: string]: string} {
+		var result: {[name: string]: string} = {};
+		var params = document.location.search.slice(1).split('&');
+		$.each(params, (zz, val) => {
+			var idx = val.indexOf('=');
+
+			if (idx === -1) {
+				result[val] = ''
+			} else {
+				var name = val.slice(0, idx);
+				var value = decodeURIComponent(val.slice(idx + 1));
+
+				result[name] = value;
+			}
+		});
+
+		return result;
 	}
 
 	getUiMode(): string {

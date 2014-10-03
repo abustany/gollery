@@ -4,7 +4,8 @@ requirejs.config({
 		'hammer': '../vendor/jquery-hammerjs/jquery.hammer',
 		'hammerjs': '../vendor/hammerjs/hammer',
 		'leaflet-wrapper': '../vendor/leaflet/leaflet-src',
-		'jquery': '../vendor/jquery/jquery'
+		'jquery': '../vendor/jquery/jquery',
+		'jquery.cookie': '../vendor/jquery-cookie/jquery.cookie'
 	}
 });
 
