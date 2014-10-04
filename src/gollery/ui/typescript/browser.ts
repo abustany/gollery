@@ -23,6 +23,7 @@ class Browser {
 	private album: Album;
 	private flipper: Flipper;
 	private mapToggleButton: JQuery;
+	private mapLayerLoaded = false;
 
 	constructor(private app: App) {
 		var x = Leaflet;
@@ -35,8 +36,6 @@ class Browser {
 			center: L.latLng([52.5079, 13.4854]),
 			zoom: 13
 		});
-
-		Browser.osmLayer.addTo(this.map);
 
 		this.markers = L.layerGroup();
 		this.markers.addTo(this.map);
@@ -203,6 +202,12 @@ class Browser {
 		if (show) {
 			this.flipper.flip(true);
 			this.mapToggleButton.attr('value', I18N.G('List view'));
+
+			// Lazy loading of map tiles to avoid gazillions of requests on page load.
+			if (!this.mapLayerLoaded) {
+				Browser.osmLayer.addTo(this.map);
+				this.mapLayerLoaded = true;
+			}
 		} else {
 			this.flipper.flip(false);
 			this.mapToggleButton.attr('value', I18N.G('Map view'));
