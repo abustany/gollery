@@ -1,6 +1,8 @@
 import Album = require('album');
 import App = require('app');
 import $ = require('jquery');
+import Flipper = require('flipper');
+import I18N = require('i18n');
 import Leaflet = require('leaflet-wrapper');
 import Picture = require('picture');
 import PictureFrame = require('pictureframe');
@@ -19,6 +21,8 @@ class Browser {
 	private map: L.Map;
 	private markers: L.LayerGroup;
 	private album: Album;
+	private flipper: Flipper;
+	private mapToggleButton: JQuery;
 
 	constructor(private app: App) {
 		var x = Leaflet;
@@ -37,7 +41,10 @@ class Browser {
 		this.markers = L.layerGroup();
 		this.markers.addTo(this.map);
 
-		$('#browser-map-button').click(() => {
+		this.flipper = new Flipper('#browser-content-flipper');
+		this.mapToggleButton = $('#browser-map-button');
+
+		this.mapToggleButton.click(() => {
 			this.toggleMap();
 		});
 	}
@@ -125,7 +132,7 @@ class Browser {
 		});
 	}
 
-	calculateGpsBoundingBox(album: Album): L.LatLngBounds {
+	private calculateGpsBoundingBox(album: Album): L.LatLngBounds {
 		var min = (a, b) => {
 			if (a === undefined) {
 				return b;
@@ -171,14 +178,14 @@ class Browser {
 		return L.latLngBounds(L.latLng([minLat, minLon]), L.latLng([maxLat, maxLon]));
 	}
 
-	addPicture(pic: Picture): void {
+	private addPicture(pic: Picture): void {
 		var href = '#view:' + this.album.name + '/' + pic.path;
 		var frame = new PictureFrame(this.app, this.album.name, pic, href);
 
 		$('#browser-picture-list-pane').append(frame.el);
 	}
 
-	toggleMap(): void {
+	private toggleMap(): void {
 		var app = this.app;
 
 		if (!app.currentRoute || app.currentRoute.action !== 'browse') {
@@ -190,6 +197,16 @@ class Browser {
 		var newHash = 'browse' + mapParam + ':' + app.currentRoute.param;
 
 		app.navigate(newHash);
+	}
+
+	showMap(show: boolean): void {
+		if (show) {
+			this.flipper.flip(true);
+			this.mapToggleButton.attr('value', I18N.G('List view'));
+		} else {
+			this.flipper.flip(false);
+			this.mapToggleButton.attr('value', I18N.G('Map view'));
+		}
 	}
 
 	currentAlbum(): Album {

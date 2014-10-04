@@ -1,7 +1,6 @@
 import Album = require('album');
 import AlbumList = require('albumlist');
 import Browser = require('browser');
-import Flipper = require('flipper');
 import I18N = require('i18n');
 import InfoWindow = require('infowindow');
 import $ = require('jquery');
@@ -15,7 +14,6 @@ class App {
 	private albumList: AlbumList;
 	private browser: Browser;
 	private infoWindow: InfoWindow;
-	private listMapFlipper: Flipper;
 	private viewer: Viewer;
 	private navigateSilent: boolean;
 	public currentRoute: Route;
@@ -43,7 +41,6 @@ class App {
 		this.albumList = new AlbumList(this);
 		this.browser = new Browser(this);
 		this.infoWindow = new InfoWindow();
-		this.listMapFlipper = new Flipper('#browser-content-flipper');
 		this.viewer = new Viewer(this);
 
 		this.loadAlbums();
@@ -403,15 +400,7 @@ class App {
 				this.browser.browse(data);
 			});
 
-			var $toggleViewButton = $('#browser-map-button');
-
-			if (options['map']) {
-				this.listMapFlipper.flip(true);
-				$toggleViewButton.attr('value', I18N.G('List view'));
-			} else {
-				this.listMapFlipper.flip(false);
-				$toggleViewButton.attr('value', I18N.G('Map view'));
-			}
+			this.browser.showMap(options['map']);
 		} else {
 			this.browser.browse(null);
 		}
