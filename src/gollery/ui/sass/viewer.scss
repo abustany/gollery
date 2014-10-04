@@ -1,0 +1,69 @@
+@import "compass/css3";
+
+#viewer {
+	width: 100%;
+	height: 100%;
+	background-color: black;
+	color: white;
+}
+
+#viewer-inner {
+	width: inherit;
+	height: inherit;
+	max-width: 100%;
+	max-height: 100%;
+	display: block;
+	text-align: center;
+}
+
+#viewer-img {
+	width: auto;
+	height: auto;
+	max-width: 100%;
+	max-height: 100%;
+}
+
+#viewer-toolbar {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	width: 100%;
+	height: 2em;
+	display: table;
+}
+
+#viewer-toolbar > div.viewer-toolbar-autohide {
+	@include translateY(2em);
+	@include single-transition("transform", .5s, ease, 1s);
+}
+
+#viewer-toolbar:hover > div {
+	@include translateY(0px);
+	@include single-transition("transform", .5s, ease, 0s);
+}
+.viewer-toolbar-force-show {
+	@include translateY(0px);
+}
+
+#viewer-toolbar-inner {
+	background-color: rgba(0, 0, 0, .7);
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+}
+
+
+.viewer-button {
+	height: 80%;
+	min-width: 2em;
+}
+
+#viewer-quit-button {
+	float: left;
+}
+
+#viewer-fullscreen-button {
+	/* Hidden by default as not all browsers support it */
+	display: none;
+	float: right;
+}

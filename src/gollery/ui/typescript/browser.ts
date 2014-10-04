@@ -49,7 +49,7 @@ class Browser {
 
 		this.album = album;
 
-		$('#picture-list').html('');
+		$('#browser-picture-list-pane').html('');
 
 		$('#top-bar-browser-album-title').text(album ? album.name : '');
 
@@ -175,7 +175,7 @@ class Browser {
 		var href = '#view:' + this.album.name + '/' + pic.path;
 		var frame = new PictureFrame(this.app, this.album.name, pic, href);
 
-		$('#picture-list').append(frame.el);
+		$('#browser-picture-list-pane').append(frame.el);
 	}
 
 	toggleMap(): void {
