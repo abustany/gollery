@@ -1,19 +1,61 @@
 module.exports = function (grunt) {
+	var path = require('path');
+
+	var sourceDir = path.join(__dirname, 'src/gollery/ui');
+	var buildDir = path.join(__dirname, 'src/gollery/ui-build');
+	var destDir = path.join(__dirname, 'src/gollery/static');
+
+	var src = function(name) {
+		return path.join(sourceDir, (name || ''));
+	};
+
+	var build = function(name) {
+		return path.join(buildDir, (name || ''));
+	};
+
+	var dst = function(name) {
+		return path.join(destDir, (name || ''));
+	};
+
+
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		compass: {
 			options: {
-				config: 'src/gollery/static/config.rb',
-				basePath: 'src/gollery/static'
+				basePath: src(),
+				sassDir: src('sass'),
+				cssDir: build('css'),
+				outputStyle: 'compressed'
 			},
 			build: {}
 		},
+		concat: {
+			css: {
+				src: [build('css/*.css'), dst('vendor/leaflet/leaflet.css')],
+				dest: dst('style.css')
+			}
+		},
+		copy: {
+			html: {
+				expand: true,
+				cwd: src(),
+				src: ['index.html', 'images/**', 'i18n/**'],
+				dest: dst()
+			}
+		},
 		requirejs: {
 			options: {
-				baseUrl: 'src/gollery/static/js',
-				mainConfigFile: 'src/gollery/static/js/main.js',
+				baseUrl: build('js/ui/typescript'),
+				paths: {
+					'hammer': dst('vendor/jquery-hammerjs/jquery.hammer'),
+					'hammerjs': dst('vendor/hammerjs/hammer'),
+					'leaflet-wrapper': dst('vendor/leaflet/leaflet-src'),
+					'jquery': dst('vendor/jquery/jquery'),
+					'jquery.cookie': dst('vendor/jquery-cookie/jquery.cookie')
+				},
+				insertRequire: ['main'],
 				name: 'main',
-				out: 'src/gollery/static/index.js',
+				out: dst('index.js'),
 				optimize: 'uglify2',
 				generateSourceMaps: true,
 				preserveLicenseComments: false
@@ -22,17 +64,17 @@ module.exports = function (grunt) {
 		},
 		typescript: {
 			build: {
-				src: ['src/gollery/static/typescript/*.ts'],
-				dest: 'src/gollery/static/js',
+				src: src('typescript/*.ts'),
+				dest: build('js'),
 				options: {
 					module: 'amd',
-					basePath: 'src/gollery/static/typescript'
+					basePath: 'src/gollery'
 				}
 			}
 		},
 		bower: {
 			options: {
-				targetDir: 'src/gollery/static/vendor',
+				targetDir: dst('vendor'),
 				cleanup: true,
 				layout: 'byComponent'
 			},
@@ -41,16 +83,20 @@ module.exports = function (grunt) {
 		},
 		watch: {
 			sass: {
-				files: ['src/gollery/static/sass/*'],
-				tasks: ['compass']
+				files: [src('sass/*')],
+				tasks: ['compass', 'concat:css']
 			},
 			js: {
-				files: ['src/gollery/static/js/*'],
+				files: [build('js/**')],
 				tasks: ['requirejs']
 			},
 			typescript: {
-				files: ['src/gollery/static/typescript/*.ts'],
+				files: [src('typescript/*.ts')],
 				tasks: ['typescript']
+			},
+			html: {
+				files: [src('index.html'), src('images/**'), src('i18n/**')],
+				tasks: ['copy:html']
 			}
 		},
 		shell: {
@@ -95,12 +141,14 @@ module.exports = function (grunt) {
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-compass');
+	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
 	grunt.loadNpmTasks('grunt-typescript');
 	grunt.loadNpmTasks('grunt-shell');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-bower-task');
 
-	grunt.registerTask('default', ['bower:install', 'compass', 'typescript', 'requirejs']);
+	grunt.registerTask('default', ['bower:install', 'compass', 'concat:css', 'typescript', 'requirejs', 'copy:html']);
 	grunt.registerTask('package', ['default', 'shell:package']);
 };
