@@ -51,6 +51,11 @@ class I18N {
 		case 'INPUT':
 			return (<HTMLInputElement>item).value;
 		default:
+			// We can only translate text
+			if (item.childNodes.length != 1 || item.childNodes[0].nodeType !== 3) {
+				return null;
+			}
+
 			return item.textContent.trim();
 		}
 	}
@@ -72,7 +77,11 @@ class I18N {
 		var i18nKey = item.hasAttribute('data-i18n');
 
 		if (i18nKey) {
-			I18N.setElementValue(item, _(I18N.getElementValue(item)));
+			var currentVal = I18N.getElementValue(item);
+
+			if (currentVal) {
+				I18N.setElementValue(item, _(currentVal));
+			}
 		}
 
 		if (!item.children) {
