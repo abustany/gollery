@@ -1,17 +1,21 @@
+@import "compass/css3";
+
 .picture-frame {
-	float: left;
+	display: inline-block;
 	width: 220px;
 	height: 220px;
-	margin: 1%;
-	border: 1px solid black;
+	margin: 0;
 	padding: 0;
-	background-color: white;
+	position: relative;
 }
 
 .picture-frame-inner {
-	width: inherit;
-	height: inherit;
-	text-align: center;
-	vertical-align: middle;
-	display: table-cell;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	@include translate(-50%, -50%);
+}
+
+.picture-frame-inner img {
+	@include box-shadow(black .2em .2em 4px);
 }

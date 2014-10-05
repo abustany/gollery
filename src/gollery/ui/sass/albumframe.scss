@@ -1,13 +1,15 @@
+@import "variables";
+
 .album-frame {
-	float: left;
-	width: 220px;
-	height: 220px;
-	margin: 1%;
-	border: 1px solid black;
+	position: relative;
+	display: inline-block;
+	width: $thumbnail-size;
+	height: $thumbnail-size;
+	margin: 0.1em;
+	border: none;
 	padding: 0;
-	background-color: white;
 	text-align: center;
-	margin-bottom: 2em;
+	overflow: hidden;
 }
 
 .album-frame-inner {
@@ -18,7 +20,21 @@
 	clear: right;
 }
 
-.album-frame-title {
-	display: block;
-	margin-top: .5em;
+.album-frame-inner img {
+	min-height: $thumbnail-size;
+	min-width: $thumbnail-size;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+}
+
+.album-frame-title, .album-frame-title :visited {
+	position: absolute;
+	left: 0px;
+	bottom: .5em;
+	width: $thumbnail-size;
+	vertical-align: bottom;
+	display: table-cell;
+	color: $color-text;
+	text-shadow: black .1em .1em 1px;
 }

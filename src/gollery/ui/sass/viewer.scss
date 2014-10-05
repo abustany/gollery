@@ -50,12 +50,16 @@
 	display: table-cell;
 	vertical-align: middle;
 	text-align: center;
+	padding-left: .5em;
+	padding-right: .5em;
 }
 
+#viewer-prev-button {
+	margin-right: 1em;
+}
 
-.viewer-button {
-	height: 80%;
-	min-width: 2em;
+#viewer-next-button {
+	margin-left: 1em;
 }
 
 #viewer-quit-button {

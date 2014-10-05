@@ -28,10 +28,6 @@ class Browser {
 	constructor(private app: App) {
 		var x = Leaflet;
 
-		$('#top-bar-browser-back-button').click(() => {
-			this.app.navigate('');
-		});
-
 		this.map = L.map('browser-map-view', {
 			center: L.latLng([52.5079, 13.4854]),
 			zoom: 13
@@ -41,7 +37,7 @@ class Browser {
 		this.markers.addTo(this.map);
 
 		this.flipper = new Flipper('#browser-content-flipper');
-		this.mapToggleButton = $('#browser-map-button');
+		this.mapToggleButton = $('#top-bar-browser-map-button');
 
 		this.mapToggleButton.click(() => {
 			this.toggleMap();
@@ -201,7 +197,8 @@ class Browser {
 	showMap(show: boolean): void {
 		if (show) {
 			this.flipper.flip(true);
-			this.mapToggleButton.attr('value', I18N.G('List view'));
+			this.mapToggleButton.attr('title', I18N.G('List view'));
+			this.mapToggleButton.html('<i>¹</i>');
 
 			// Lazy loading of map tiles to avoid gazillions of requests on page load.
 			if (!this.mapLayerLoaded) {
@@ -210,7 +207,8 @@ class Browser {
 			}
 		} else {
 			this.flipper.flip(false);
-			this.mapToggleButton.attr('value', I18N.G('Map view'));
+			this.mapToggleButton.attr('title', I18N.G('Map view'));
+			this.mapToggleButton.html('<i>?</i>');
 		}
 	}
 

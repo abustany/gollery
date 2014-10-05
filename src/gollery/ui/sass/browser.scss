@@ -25,13 +25,6 @@
 	overflow: hidden;
 }
 
-#browser-toolbar {
-	position: absolute;
-	right: 2em;
-	bottom: 1em;
-	@include translateZ(1px); /* Makes it appear on top of thumbs on iPad */
-}
-
 #browser-picture-list-pane {
 	overflow: auto;
 	max-width: 100%;

@@ -12,14 +12,15 @@ class AlbumFrame {
 		var frame = document.createElement('div');
 		frame.className = 'album-frame';
 
-		var a = document.createElement('a');
-		a.className = 'album-frame-inner';
+		frame.appendChild(this.makeImg(app, album, href));
+		frame.appendChild(this.makeTitle(album, href));
 
-		if (href) {
-			a.href = href;
-		}
+		this.el = frame;
+	}
 
-		frame.appendChild(a);
+	private makeImg(app: App, album: Album, href: string): HTMLElement {
+		var imgDiv = document.createElement('div');
+		imgDiv.className = 'album-frame-inner';
 
 		LoadingScreen.push();
 
@@ -39,16 +40,29 @@ class AlbumFrame {
 			img.src = Common.pictureUrl('small', album.cover);
 		}
 
+		var a = document.createElement('a');
+
+		if (href) {
+			a.href = href;
+		}
+
 		a.appendChild(img);
+		imgDiv.appendChild(a);
 
-		var titleFrame = document.createElement('a');
-		titleFrame.href = href;
-		titleFrame.className = 'album-frame-title';
-		frame.appendChild(titleFrame);
+		return imgDiv;
+	}
 
-		titleFrame.appendChild(document.createTextNode(album.name));
+	private makeTitle(album: Album, href: string): HTMLElement {
+		var a = document.createElement('a');
+		a.className = 'album-frame-title';
 
-		this.el = frame;
+		if (href) {
+			a.href = href;
+		}
+
+		a.appendChild(document.createTextNode(album.name));
+
+		return a;
 	}
 }
 

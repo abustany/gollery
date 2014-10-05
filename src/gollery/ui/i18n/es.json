@@ -4,7 +4,7 @@
 	"There are no pictures with GPS information in this album.": "No hay ningúna photo en este albúm con información GPS.",
 	"Go back": "Volver",
 	"Full screen": "Pantalla completa",
-	"Info": "Info",
+	"About": "Información",
 	"Welcome to Gollery": "Bienvenidos a Gollery",
 	"Howdy! You're using Gollery version": "Hola! Estas ocupando Gollery versión",
 	"System information": "Información del sistema",
@@ -13,5 +13,9 @@
 	"Memory used": "Memoria usada",
 	"Maximum number of threads": "Número máximo de threads",
 	"Number of goroutines": "Número de goroutines",
-	"Loading (%1 left)": "Cargando (quedan %1)"
+	"Loading (%1 left)": "Cargando (quedan %1)",
+	"Back to albums": "Volver hacía los albumes",
+	"Close": "Cerrar",
+	"Previous picture": "Foto previa",
+	"Next picture": "Foto siguiente"
 }
