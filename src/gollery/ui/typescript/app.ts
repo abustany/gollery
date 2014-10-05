@@ -137,7 +137,7 @@ class App {
 			return;
 		}
 
-		if (hash === '') {
+		if (hash === '' || hash === '#') {
 			this.setUiMode('album-list');
 			return;
 		}
