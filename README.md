@@ -120,9 +120,9 @@ Since Gollery links against system library like ImageMagick, you need to build
 it against the environment you want to deploy in. For example, if your build
 host is a recent Fedora, the resulting binary won't run on CentOS which has a
 much older ImageMagick.  To make building Gollery easier, we provide a
-Dockerfile that can be used to build Gollery in a CentOS container. That way,
-you don't need to install anything on the build host except
-[Docker](http://docker.io/) itself.
+Dockerfile that can be used to build Gollery in a CentOS container. You still
+need to have the tools to build the UI present on the host, since only the
+gollery binary will be built in the container.
 
 The steps to generate a Gollery archive are:
 
@@ -134,7 +134,7 @@ The steps to generate a Gollery archive are:
 The first build will take a while, since it needs to download the base image,
 and all the dependencies needed to build Gollery. However, all of that will be
 cached, so subsequent builds will be much faster. Once the builds completes,
-there will be a tar.bz2 archive in the `build/out` folder. That archive can be
+there will be a tar.bz2 archive in the `build` folder. That archive can be
 unzipped on the target server, and Gollery can be started with the `run.sh`
 script after editing the `app.conf` file as in the other scenarios.
 
