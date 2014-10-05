@@ -82,6 +82,10 @@ class I18N {
 			if (currentVal) {
 				I18N.setElementValue(item, _(currentVal));
 			}
+
+			if (item.hasAttribute('title')) {
+				item.setAttribute('title', _(item.getAttribute('title')));
+			}
 		}
 
 		if (!item.children) {
