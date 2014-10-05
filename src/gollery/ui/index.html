@@ -13,128 +13,130 @@
 		<meta name="viewport" content="width=device-width, init-scale=1.0">
 	</head>
 	<body class="ui-mode-album-list">
-		<div class="ui-pane" id="pane-album-list">
-			<div id="album-list-container">
-				<ul id="album-list">
-				</ul>
+		<div id="content">
+			<div class="ui-pane" id="pane-album-list">
+				<div id="album-list-container">
+					<ul id="album-list">
+					</ul>
+				</div>
 			</div>
-		</div>
-		<div class="ui-pane" id="pane-browser">
-			<div id="browser-content">
-				<div id="browser-content-flipper" class="widget-flipper">
-					<div class="browser-pane" id="browser-picture-list-pane">
-					</div>
-					<div id="browser-map-view-pane" class="browser-pane">
-						<div id="browser-map-view">
+			<div class="ui-pane" id="pane-browser">
+				<div id="browser-content">
+					<div id="browser-content-flipper" class="widget-flipper">
+						<div class="browser-pane" id="browser-picture-list-pane">
 						</div>
-						<div id="browser-map-view-no-map">
-							<div id="browser-map-view-no-map-inner" data-i18n>
-								There are no pictures with GPS information in this album.
+						<div id="browser-map-view-pane" class="browser-pane">
+							<div id="browser-map-view">
+							</div>
+							<div id="browser-map-view-no-map">
+								<div id="browser-map-view-no-map-inner" data-i18n>
+									There are no pictures with GPS information in this album.
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
 
-		<div class="ui-pane" id="pane-viewer">
-			<div id="viewer">
-				<div id="viewer-inner">
-					<img id="viewer-img"/>
-				</div>
-				<div id="viewer-toolbar">
-					<div id="viewer-toolbar-inner">
-						<a href="javascript:" title="Go back" id="viewer-quit-button" data-i18n>
-							<i>(</i>
-						</a>
-						<a href="javascript:" title="Previous picture" id="viewer-prev-button" data-i18n>
-							<i>&lt;</i>
-						</a>
-						<a href="javascript:" title="Next picture" id="viewer-next-button" data-i18n>
-							<i>&gt;</i>
-						</a>
-						<a href="javascript:" title="Full screen" id="viewer-fullscreen-button" data-i18n>
-							<i>%</i>
-						</a>
+			<div class="ui-pane" id="pane-viewer">
+				<div id="viewer">
+					<div id="viewer-inner">
+						<img id="viewer-img"/>
+					</div>
+					<div id="viewer-toolbar">
+						<div id="viewer-toolbar-inner">
+							<a href="javascript:" title="Go back" id="viewer-quit-button" data-i18n>
+								<i>(</i>
+							</a>
+							<a href="javascript:" title="Previous picture" id="viewer-prev-button" data-i18n>
+								<i>&lt;</i>
+							</a>
+							<a href="javascript:" title="Next picture" id="viewer-next-button" data-i18n>
+								<i>&gt;</i>
+							</a>
+							<a href="javascript:" title="Full screen" id="viewer-fullscreen-button" data-i18n>
+								<i>%</i>
+							</a>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
 
-		<div id="top-bar">
-			<div class="top-bar-container" id="top-bar-album-list">
-				<div class="top-bar-center" data-i18n>
-					Welcome to Gollery
+			<div id="top-bar">
+				<div class="top-bar-container" id="top-bar-album-list">
+					<div class="top-bar-center" data-i18n>
+						Welcome to Gollery
+					</div>
+					<a href="javascript:" class="top-bar-right" id="top-bar-album-list-info" title="About" data-i18n>
+						<i>S</i>
+					</a>
 				</div>
-				<a href="javascript:" class="top-bar-right" id="top-bar-album-list-info" title="About" data-i18n>
-					<i>S</i>
-				</a>
+				<div class="top-bar-container" id="top-bar-browser">
+					<div class="top-bar-center" id="top-bar-browser-album-title">
+					</div>
+					<div class="top-bar-left">
+						<a href="#" title="Back to albums" data-i18n><i>(</i></a>
+					</div>
+					<div class="top-bar-right">
+						<a href="javascript:" title="Map view" id="top-bar-browser-map-button" data-i18n><i>?</i></a>
+					</div>
+				</div>
 			</div>
-			<div class="top-bar-container" id="top-bar-browser">
-				<div class="top-bar-center" id="top-bar-browser-album-title">
-				</div>
-				<div class="top-bar-left">
-					<a href="#" title="Back to albums" data-i18n><i>(</i></a>
-				</div>
-				<div class="top-bar-right">
-					<a href="javascript:" title="Map view" id="top-bar-browser-map-button" data-i18n><i>?</i></a>
-				</div>
+
+			<div id="info-window">
+				<h2>
+					<span data-i18n>Howdy! You're using Gollery version</span>
+					<span id="info-window-version"></span>.
+					<span id="info-window-version"></span>.
+				</h2>
+
+				<h3 data-i18n>
+					System information
+				</h3>
+
+				<table id="info-window-stats">
+					<tr>
+						<td data-i18n>Number of thumbnails in the queue</td>
+						<td id="info-window-thumbnailing-queue-size"></td>
+					</tr>
+					<tr>
+						<td data-i18n>Go version</td>
+						<td id="info-window-go-version"></td>
+					</tr>
+					<tr>
+						<td data-i18n>Memory used</td>
+						<td id="info-window-memory-allocated"></td>
+					</tr>
+					<tr>
+						<td data-i18n>Maximum number of threads</td>
+						<td id="info-window-go-max-procs"></td>
+					</tr>
+					<tr>
+						<td data-i18n>Number of goroutines</td>
+						<td id="info-window-n-goroutines"></td>
+					</tr>
+				</table>
+
+				<a href="javascript:" id="info-window-close" title="Close" data-i18n><i>×</i></a>
 			</div>
-		</div>
 
-		<div id="info-window">
-			<h2>
-				<span data-i18n>Howdy! You're using Gollery version</span>
-				<span id="info-window-version"></span>.
-				<span id="info-window-version"></span>.
-			</h2>
+			<div id="loading-screen">
+				<div></div>
+			</div>
 
-			<h3 data-i18n>
-				System information
-			</h3>
-
-			<table id="info-window-stats">
-				<tr>
-					<td data-i18n>Number of thumbnails in the queue</td>
-					<td id="info-window-thumbnailing-queue-size"></td>
-				</tr>
-				<tr>
-					<td data-i18n>Go version</td>
-					<td id="info-window-go-version"></td>
-				</tr>
-				<tr>
-					<td data-i18n>Memory used</td>
-					<td id="info-window-memory-allocated"></td>
-				</tr>
-				<tr>
-					<td data-i18n>Maximum number of threads</td>
-					<td id="info-window-go-max-procs"></td>
-				</tr>
-				<tr>
-					<td data-i18n>Number of goroutines</td>
-					<td id="info-window-n-goroutines"></td>
-				</tr>
-			</table>
-
-			<a href="javascript:" id="info-window-close" title="Close" data-i18n><i>×</i></a>
-		</div>
-
-		<div id="loading-screen">
-			<div></div>
-		</div>
-
-		<div id="oops-screen">
-			<div>
-				<h3>Gollery</h3>
-				<p>
-					An error has occured. To continue:
-				</p>
-				<p>
-					Press F5 to restart Gollery
-				</p>
-				<p>
-					Error: <span id="oops-screen-error"></span>
-				</p>
+			<div id="oops-screen">
+				<div>
+					<h3>Gollery</h3>
+					<p>
+						An error has occured. To continue:
+					</p>
+					<p>
+						Press F5 to restart Gollery
+					</p>
+					<p>
+						Error: <span id="oops-screen-error"></span>
+					</p>
+				</div>
 			</div>
 		</div>
 	</body>

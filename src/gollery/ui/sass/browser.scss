@@ -2,7 +2,7 @@
 @import "variables";
 
 #browser-content {
-	position: fixed;
+	position: absolute;
 	top: $top-bar-size;
 	right: 0px;
 	bottom: 0px;
