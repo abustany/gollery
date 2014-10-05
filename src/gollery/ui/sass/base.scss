@@ -4,7 +4,15 @@
 @import "mixins";
 @import "variables";
 
-@include font-face('web-symbols', url('images/WebSymbols-Regular.otf'));
+@include font-face(
+	'web-symbols',
+	font-files( // FIXME: Add woff2 once Compass 0.13 is released
+		'/images/websymbols-regular-webfont.woff',
+		'/images/websymbols-regular-webfont.ttf',
+		'/images/websymbols-regular-webfont.svg'
+	),
+	'/images/websymbols-regular-webfont.eot'
+);
 
 body {
 	margin: 0;
